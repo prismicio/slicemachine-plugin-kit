@@ -43,10 +43,8 @@ it("throws when no slice model is returned", async () => {
 		hookSystem,
 	);
 
-	await expect(
-		readCustomTypeModel(args),
-	).rejects.toThrowErrorMatchingInlineSnapshot(
-		'"Custom Type `foo` not found."',
+	await expect(() => readCustomTypeModel(args)).rejects.toThrowError(
+		"Custom Type `foo` not found.",
 	);
 	expect(spy).toHaveBeenCalledWith("custom-type:read", args);
 

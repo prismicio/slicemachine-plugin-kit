@@ -37,11 +37,10 @@ it("throws when no slice model is returned", async () => {
 	);
 	const { readSliceLibrary } = createSliceMachineActions(project, hookSystem);
 
-	await expect(
-		readSliceLibrary(args),
-	).rejects.toThrowErrorMatchingInlineSnapshot(
-		'"Slice library `foo` not found."',
+	await expect(() => readSliceLibrary(args)).rejects.toThrowError(
+		"Slice library `foo` not found.",
 	);
+
 	expect(spy).toHaveBeenCalledWith("slice-library:read", args);
 
 	vi.resetAllMocks();

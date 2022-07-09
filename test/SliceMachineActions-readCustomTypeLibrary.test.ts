@@ -40,10 +40,8 @@ it("throws when no slice model is returned", async () => {
 		hookSystem,
 	);
 
-	await expect(
-		readCustomTypeLibrary({}),
-	).rejects.toThrowErrorMatchingInlineSnapshot(
-		'"Couldn\'t read Custom Type library."',
+	await expect(() => readCustomTypeLibrary({})).rejects.toThrowError(
+		"Couldn't read Custom Type library.",
 	);
 	expect(spy).toHaveBeenCalledWith("custom-type-library:read", {});
 

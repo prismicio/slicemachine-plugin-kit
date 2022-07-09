@@ -38,8 +38,8 @@ it("throws when no slice model is returned", async () => {
 	);
 	const { readSliceModel } = createSliceMachineActions(project, hookSystem);
 
-	await expect(readSliceModel(args)).rejects.toThrowErrorMatchingInlineSnapshot(
-		'"Slice `bar` not found in the `foo` library."',
+	await expect(() => readSliceModel(args)).rejects.toThrowError(
+		"Slice `bar` not found in the `foo` library.",
 	);
 	expect(spy).toHaveBeenCalledWith("slice:read", args);
 
