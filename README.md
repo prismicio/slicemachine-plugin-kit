@@ -9,7 +9,7 @@
 
 <!-- TODO: Replacing link to Prismic with [Prismic][prismic] is useful here -->
 
-Set of helpers to develop and run Slice Machine plugins.
+A set of helpers to develop and run Slice Machine plugins.
 
 <!--
 
