@@ -106,13 +106,13 @@ export class HookError<TError = Error | unknown> extends Error {
 			`Error in \`${meta.owner}\` during \`${meta.type}\` hook: ${
 				cause instanceof Error ? cause.message : String(cause)
 			}`,
-			{ cause: cause instanceof Error ? cause : undefined },
 		);
 
 		this.type = meta.type;
 		this.owner = meta.owner;
 		this.rawMeta = meta;
 		this.rawCause = cause;
+		this.cause = cause instanceof Error ? cause : undefined;
 	}
 }
 
