@@ -22,6 +22,9 @@ TODO: Create a small list of package features:
 Non-breaking space: &nbsp; are here on purpose to fix emoji rendering on certain systems.
 
 -->
+- 🛠 &nbsp;Develop Slice Machine plugins with ease;
+- ⚙ &nbsp;Batteries included plugin runner;
+- 🈂 &nbsp;Beautifully typed.
 
 ## Install
 
