@@ -168,7 +168,7 @@ export type SliceReadHookData = {
 	libraryID: string;
 	sliceID: string;
 };
-export type SliceReadHookReturnType = prismicT.SharedSliceModel;
+export type SliceReadHookReturnType = { model: prismicT.SharedSliceModel };
 export type SliceReadHookBase = SliceMachineHook<
 	SliceReadHookData,
 	SliceReadHookReturnType
@@ -247,7 +247,7 @@ export type CustomTypeDeleteHook<
 export type CustomTypeReadHookData = {
 	id: string;
 };
-export type CustomTypeReadHookReturnType = prismicT.CustomTypeModel;
+export type CustomTypeReadHookReturnType = { model: prismicT.CustomTypeModel };
 export type CustomTypeReadHookBase = SliceMachineHook<
 	CustomTypeReadHookData,
 	CustomTypeReadHookReturnType
