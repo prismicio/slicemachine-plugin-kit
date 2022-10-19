@@ -1,4 +1,3 @@
-import { CustomTypeModel, SharedSliceModel } from "@prismicio/types";
 import { HookSystem } from "./lib";
 import {
 	CustomTypeLibraryReadHookReturnType,
@@ -18,14 +17,9 @@ export type ReadAllSliceModelsActionArgs<
 	withMetadata?: TWithMetadata;
 };
 
-export type ReadAllSliceModelsActionReturnType<
-	TWithMetadata extends boolean = false,
-> = TWithMetadata extends true
-	? {
-			libraryID: string;
-			model: SharedSliceModel;
-	  }[]
-	: SharedSliceModel[];
+export type ReadAllSliceModelsActionReturnType = (SliceReadHookReturnType & {
+	libraryID: string;
+})[];
 
 export type ReadAllSliceModelsForLibraryActionArgs = {
 	libraryID: string;
@@ -58,33 +52,31 @@ export class SliceMachineActions {
 		this.hookSystem = hookSystem;
 	}
 
-	readAllSliceModels = async <TWithMetadata extends boolean = false>({
-		withMetadata,
-	}: ReadAllSliceModelsActionArgs<TWithMetadata> = {}): Promise<
-		ReadAllSliceModelsActionReturnType<TWithMetadata>
-	> => {
-		const libraryIDs = this.project.config.libraries || [];
+	readAllSliceModels =
+		async (): Promise<ReadAllSliceModelsActionReturnType> => {
+			const libraryIDs = this.project.config.libraries || [];
 
-		return (
-			await Promise.all(
-				libraryIDs.map(async (libraryID) => {
-					const models = await this.readAllSliceModelsForLibrary({ libraryID });
-
-					if (withMetadata) {
-						return models.map((model) => {
-							return { libraryID, model };
+			return (
+				await Promise.all(
+					libraryIDs.map(async (libraryID) => {
+						const models = await this.readAllSliceModelsForLibrary({
+							libraryID,
 						});
-					} else {
-						return models;
-					}
-				}),
-			)
-		).flat() as ReadAllSliceModelsActionReturnType<TWithMetadata>;
-	};
+
+						return models.map((model) => {
+							return {
+								libraryID,
+								...model,
+							};
+						});
+					}),
+				)
+			).flat();
+		};
 
 	readAllSliceModelsForLibrary = async (
 		args: ReadAllSliceModelsForLibraryActionArgs,
-	): Promise<SharedSliceModel[]> => {
+	): Promise<SliceReadHookReturnType[]> => {
 		const { sliceIDs } = await this.readSliceLibrary({
 			libraryID: args.libraryID,
 		});
@@ -139,7 +131,9 @@ export class SliceMachineActions {
 		return library;
 	};
 
-	readAllCustomTypeModels = async (): Promise<CustomTypeModel[]> => {
+	readAllCustomTypeModels = async (): Promise<
+		CustomTypeReadHookReturnType[]
+	> => {
 		const { ids } = await this.readCustomTypeLibrary();
 
 		return await Promise.all(

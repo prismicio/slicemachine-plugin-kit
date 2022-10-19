@@ -27,7 +27,7 @@ it("returns all Custom Type models", async (ctx) => {
 				);
 
 				if (model) {
-					return model;
+					return { model };
 				}
 
 				throw new Error("not implemented");
@@ -41,7 +41,11 @@ it("returns all Custom Type models", async (ctx) => {
 	await pluginRunner.callHook("__debug__", undefined);
 
 	const res = await actions.readAllCustomTypeModels();
-	expect(res).toStrictEqual(customTypeModels);
+	expect(res).toStrictEqual(
+		customTypeModels.map((model) => {
+			return { model };
+		}),
+	);
 });
 
 it("returns empty array when project has no Custom Types", async () => {
