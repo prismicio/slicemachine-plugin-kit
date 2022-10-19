@@ -35,4 +35,12 @@ module.exports = {
 		"@typescript-eslint/explicit-module-boundary-types": "error",
 		"tsdoc/syntax": "warn",
 	},
+	overrides: [
+		{
+			files: ["./test/**/*"],
+			rules: {
+				"@typescript-eslint/no-explicit-any": "off",
+			},
+		},
+	],
 };

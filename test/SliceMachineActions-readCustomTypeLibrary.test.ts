@@ -6,8 +6,8 @@ import { createSliceMachineProject } from "./__testutils__/createSliceMachinePro
 import { createSliceMachineHookSystem } from "../src/createSliceMachineHookSystem";
 import { createSliceMachineActions } from "../src/createSliceMachineActions";
 
-const project = createSliceMachineProject(adapter.valid);
 const hookSystem = createSliceMachineHookSystem();
+const project = createSliceMachineProject(adapter.valid);
 
 it("returns slice model", async () => {
 	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
@@ -22,8 +22,8 @@ it("returns slice model", async () => {
 		hookSystem,
 	);
 
-	expect(await readCustomTypeLibrary({})).toBe("baz");
-	expect(spy).toHaveBeenCalledWith("custom-type-library:read", {});
+	expect(await readCustomTypeLibrary()).toBe("baz");
+	expect(spy).toHaveBeenCalledWith("custom-type-library:read", undefined);
 
 	vi.resetAllMocks();
 });
@@ -40,10 +40,10 @@ it("throws when no slice model is returned", async () => {
 		hookSystem,
 	);
 
-	await expect(() => readCustomTypeLibrary({})).rejects.toThrowError(
+	await expect(() => readCustomTypeLibrary()).rejects.toThrowError(
 		"Couldn't read Custom Type library.",
 	);
-	expect(spy).toHaveBeenCalledWith("custom-type-library:read", {});
+	expect(spy).toHaveBeenCalledWith("custom-type-library:read", undefined);
 
 	vi.resetAllMocks();
 });
