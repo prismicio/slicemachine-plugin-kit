@@ -27,7 +27,7 @@ it("returns all Custom Type models", async (ctx) => {
 				);
 
 				if (model) {
-					return model as any;
+					return model;
 				}
 
 				throw new Error("not implemented");
