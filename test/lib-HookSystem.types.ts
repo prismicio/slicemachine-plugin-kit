@@ -84,7 +84,8 @@ typedSystem.hook("_", "hook2", fn, { foo: "bar" });
 typedHook("hook2", fn, { foo: "bar" });
 
 /**
- * Hooks requiring meta don't accept a meta argument with additional arbitrary properties.
+ * Hooks requiring meta don't accept a meta argument with additional arbitrary
+ * properties.
  */
 // @ts-expect-error - errors about additional arbitrary properties.
 typedSystem.hook("_", "hook2", fn, { foo: "bar", qux: "quux" });

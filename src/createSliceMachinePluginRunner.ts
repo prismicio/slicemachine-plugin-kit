@@ -70,12 +70,17 @@ export class SliceMachinePluginRunner {
 				? pluginRegistration
 				: { resolve: pluginRegistration };
 
-		let plugin: SliceMachinePlugin;
+		let plugin: SliceMachinePlugin | undefined = undefined;
 
 		if (typeof resolve === "string") {
 			// Import plugin
-			const raw = await import(resolve);
-			plugin = raw.default || raw;
+			try {
+				const raw = await import(resolve);
+				plugin = raw.default || raw;
+			} catch {
+				// If the plugin could not be imported, we will
+				// throw a custom error later.
+			}
 		} else {
 			plugin = resolve;
 		}
