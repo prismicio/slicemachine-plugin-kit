@@ -5,12 +5,11 @@ import { createTestAdapter } from "./__testutils__/createTestAdapter";
 
 import { createSliceMachinePluginRunner, SliceMachineActions } from "../src";
 
-it("returns all slice models for a library", async (ctx) => {
-	const models = [ctx.mock.model.sharedSlice(), ctx.mock.model.sharedSlice()];
-	const library = {
-		id: "lib",
-		sliceIDs: models.map((model) => model.id),
-	};
+it("returns all Custom Type models", async (ctx) => {
+	const customTypeModels = [
+		ctx.mock.model.customType(),
+		ctx.mock.model.customType(),
+	];
 
 	let actions!: SliceMachineActions;
 
@@ -19,20 +18,16 @@ it("returns all slice models for a library", async (ctx) => {
 			hook("__debug__", async (_, context) => {
 				actions = context.actions;
 			});
-			hook("slice-library:read", async (args) => {
-				if (args.libraryID === library.id) {
-					return library;
-				}
-
-				throw new Error("not implemented");
+			hook("custom-type-library:read", async () => {
+				return { ids: customTypeModels.map((model) => model.id) };
 			});
-			hook("slice:read", async (args) => {
-				if (args.libraryID === library.id) {
-					const model = models.find((model) => model.id === args.sliceID);
+			hook("custom-type:read", async (args) => {
+				const model = customTypeModels.find(
+					(customTypeModel) => customTypeModel.id === args.id,
+				);
 
-					if (model) {
-						return model;
-					}
+				if (model) {
+					return model as any;
 				}
 
 				throw new Error("not implemented");
@@ -40,19 +35,16 @@ it("returns all slice models for a library", async (ctx) => {
 		},
 	});
 	const project = createSliceMachineProject(adapter);
-	project.config.libraries = [library.id];
 
 	const pluginRunner = createSliceMachinePluginRunner({ project });
 	await pluginRunner.init();
 	await pluginRunner.callHook("__debug__", undefined);
 
-	const res = await actions.readAllSliceModelsForLibrary({
-		libraryID: library.id,
-	});
-	expect(res).toStrictEqual(models);
+	const res = await actions.readAllCustomTypeModels();
+	expect(res).toStrictEqual(customTypeModels);
 });
 
-it("throws when Slice Library does not exist", async () => {
+it("returns empty array when project has no Custom Types", async () => {
 	let actions!: SliceMachineActions;
 
 	const adapter = createTestAdapter({
@@ -60,15 +52,17 @@ it("throws when Slice Library does not exist", async () => {
 			hook("__debug__", async (_, context) => {
 				actions = context.actions;
 			});
+			hook("custom-type-library:read", async () => {
+				return { ids: [] };
+			});
 		},
 	});
 	const project = createSliceMachineProject(adapter);
-	project.config.libraries = [];
 
 	const pluginRunner = createSliceMachinePluginRunner({ project });
 	await pluginRunner.init();
 	await pluginRunner.callHook("__debug__", undefined);
 
-	const fn = () => actions.readAllSliceModelsForLibrary({ libraryID: "foo" });
-	expect(fn).rejects.toThrowError("Slice library `foo` not found.");
+	const res = await actions.readAllCustomTypeModels();
+	expect(res).toStrictEqual([]);
 });

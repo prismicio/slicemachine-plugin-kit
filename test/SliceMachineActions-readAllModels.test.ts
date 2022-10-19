@@ -5,12 +5,27 @@ import { createTestAdapter } from "./__testutils__/createTestAdapter";
 
 import { createSliceMachinePluginRunner, SliceMachineActions } from "../src";
 
-it("returns all slice models for a library", async (ctx) => {
-	const models = [ctx.mock.model.sharedSlice(), ctx.mock.model.sharedSlice()];
-	const library = {
-		id: "lib",
-		sliceIDs: models.map((model) => model.id),
-	};
+it("returns all slice models from all libraries", async (ctx) => {
+	const library1Models = [
+		ctx.mock.model.sharedSlice(),
+		ctx.mock.model.sharedSlice(),
+	];
+	const library2Models = [
+		ctx.mock.model.sharedSlice(),
+		ctx.mock.model.sharedSlice(),
+	];
+	const libraries = [
+		{
+			id: "lib-1",
+			sliceIDs: library1Models.map((model) => model.id),
+			__models: library1Models,
+		},
+		{
+			id: "lib-2",
+			sliceIDs: library2Models.map((model) => model.id),
+			__models: library2Models,
+		},
+	];
 
 	let actions!: SliceMachineActions;
 
@@ -20,19 +35,26 @@ it("returns all slice models for a library", async (ctx) => {
 				actions = context.actions;
 			});
 			hook("slice-library:read", async (args) => {
-				if (args.libraryID === library.id) {
+				const library = libraries.find((library) => {
+					return library.id === args.libraryID;
+				});
+
+				if (library) {
 					return library;
 				}
 
 				throw new Error("not implemented");
 			});
 			hook("slice:read", async (args) => {
-				if (args.libraryID === library.id) {
-					const model = models.find((model) => model.id === args.sliceID);
+				const library = libraries.find(
+					(library) => library.id === args.libraryID,
+				);
+				const model = library?.__models.find(
+					(model) => model.id === args.sliceID,
+				);
 
-					if (model) {
-						return model;
-					}
+				if (model) {
+					return model;
 				}
 
 				throw new Error("not implemented");
@@ -40,19 +62,17 @@ it("returns all slice models for a library", async (ctx) => {
 		},
 	});
 	const project = createSliceMachineProject(adapter);
-	project.config.libraries = [library.id];
+	project.config.libraries = libraries.map((library) => library.id);
 
 	const pluginRunner = createSliceMachinePluginRunner({ project });
 	await pluginRunner.init();
 	await pluginRunner.callHook("__debug__", undefined);
 
-	const res = await actions.readAllSliceModelsForLibrary({
-		libraryID: library.id,
-	});
-	expect(res).toStrictEqual(models);
+	const res = await actions.readAllSliceModels();
+	expect(res).toStrictEqual(libraries.flatMap((library) => library.__models));
 });
 
-it("throws when Slice Library does not exist", async () => {
+it("returns empty array when project has no Slice Libraries", async () => {
 	let actions!: SliceMachineActions;
 
 	const adapter = createTestAdapter({
@@ -69,6 +89,6 @@ it("throws when Slice Library does not exist", async () => {
 	await pluginRunner.init();
 	await pluginRunner.callHook("__debug__", undefined);
 
-	const fn = () => actions.readAllSliceModelsForLibrary({ libraryID: "foo" });
-	expect(fn).rejects.toThrowError("Slice library `foo` not found.");
+	const res = await actions.readAllSliceModels();
+	expect(res).toStrictEqual([]);
 });
