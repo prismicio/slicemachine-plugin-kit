@@ -41,20 +41,30 @@ export const createSliceMachineActions = (
  * Slice Machine actions shared to plugins and hooks.
  */
 export class SliceMachineActions {
-	project: SliceMachineProject;
-	hookSystem: HookSystem<SliceMachineHooks>;
+	/**
+	 * The Slice Machine project's metadata.
+	 *
+	 * @internal
+	 */
+	private _project: SliceMachineProject;
+	/**
+	 * The actions' hook system used to internally trigger hook calls.
+	 *
+	 * @internal
+	 */
+	private _hookSystem: HookSystem<SliceMachineHooks>;
 
 	constructor(
 		project: SliceMachineProject,
 		hookSystem: HookSystem<SliceMachineHooks>,
 	) {
-		this.project = project;
-		this.hookSystem = hookSystem;
+		this._project = project;
+		this._hookSystem = hookSystem;
 	}
 
 	readAllSliceModels =
 		async (): Promise<ReadAllSliceModelsActionReturnType> => {
-			const libraryIDs = this.project.config.libraries || [];
+			const libraryIDs = this._project.config.libraries || [];
 
 			return (
 				await Promise.all(
@@ -97,7 +107,7 @@ export class SliceMachineActions {
 		const {
 			data: [model],
 			errors: [cause],
-		} = await this.hookSystem.callHook("slice:read", {
+		} = await this._hookSystem.callHook("slice:read", {
 			libraryID: args.libraryID,
 			sliceID: args.sliceID,
 		});
@@ -118,7 +128,7 @@ export class SliceMachineActions {
 		const {
 			data: [library],
 			errors: [cause],
-		} = await this.hookSystem.callHook("slice-library:read", {
+		} = await this._hookSystem.callHook("slice-library:read", {
 			libraryID: args.libraryID,
 		});
 
@@ -149,7 +159,7 @@ export class SliceMachineActions {
 		const {
 			data: [model],
 			errors: [cause],
-		} = await this.hookSystem.callHook("custom-type:read", {
+		} = await this._hookSystem.callHook("custom-type:read", {
 			id: args.id,
 		});
 
@@ -165,7 +175,10 @@ export class SliceMachineActions {
 			const {
 				data: [library],
 				errors: [cause],
-			} = await this.hookSystem.callHook("custom-type-library:read", undefined);
+			} = await this._hookSystem.callHook(
+				"custom-type-library:read",
+				undefined,
+			);
 
 			if (!library) {
 				throw new Error(`Couldn't read Custom Type library.`, {

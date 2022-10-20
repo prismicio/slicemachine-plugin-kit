@@ -25,10 +25,15 @@ export const createSliceMachineHelpers = (
  * Slice Machine helpers shared to plugins and hooks.
  */
 export class SliceMachineHelpers {
-	project: SliceMachineProject;
+	/**
+	 * The Slice Machine project's metadata.
+	 *
+	 * @internal
+	 */
+	private _project: SliceMachineProject;
 
 	constructor(project: SliceMachineProject) {
-		this.project = project;
+		this._project = project;
 	}
 
 	getProject = async (): Promise<SliceMachineProject> => {
@@ -37,7 +42,7 @@ export class SliceMachineHelpers {
 		const config = JSON.parse(configContents);
 
 		return {
-			...this.project,
+			...this._project,
 			config,
 		};
 	};
@@ -50,7 +55,7 @@ export class SliceMachineHelpers {
 		let formatted = stripIndent(source);
 
 		const prettierOptions = await prettier.resolveConfig(
-			filePath || this.project.root,
+			filePath || this._project.root,
 		);
 
 		formatted = prettier.format(formatted, {
@@ -63,6 +68,6 @@ export class SliceMachineHelpers {
 	};
 
 	joinPathFromRoot = (...paths: string[]): string => {
-		return path.join(this.project.root, ...paths);
+		return path.join(this._project.root, ...paths);
 	};
 }
