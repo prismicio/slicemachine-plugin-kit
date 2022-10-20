@@ -78,7 +78,6 @@ it("returns all slice models from all libraries", async (ctx) => {
 it("returns empty array when project has no Slice Libraries", async () => {
 	const adapter = createTestAdapter();
 	const project = createSliceMachineProject(adapter);
-	project.config.libraries = [];
 
 	const pluginRunner = createSliceMachinePluginRunner({ project });
 	await pluginRunner.init();

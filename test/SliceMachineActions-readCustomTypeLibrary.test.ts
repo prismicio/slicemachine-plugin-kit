@@ -1,49 +1,36 @@
-import { it, expect, vi } from "vitest";
+import { it, expect } from "vitest";
 
-import * as adapter from "./__fixtures__/adapter";
 import { createSliceMachineProject } from "./__testutils__/createSliceMachineProject";
+import { createTestAdapter } from "./__testutils__/createTestAdapter";
 
-import { createSliceMachineHookSystem } from "../src/createSliceMachineHookSystem";
-import { createSliceMachineActions } from "../src/createSliceMachineActions";
+import { createSliceMachinePluginRunner } from "../src";
 
-const hookSystem = createSliceMachineHookSystem();
-const project = createSliceMachineProject(adapter.valid);
+it("returns the Custom Type library", async () => {
+	const customTypeIDs = ["foo", "bar"];
 
-it("returns slice model", async () => {
-	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
-		vi.fn().mockResolvedValue({
-			data: ["baz"],
-			errors: [],
-		}),
-	);
+	const adapter = createTestAdapter({
+		setup: ({ hook }) => {
+			hook("custom-type-library:read", async () => {
+				return { ids: customTypeIDs };
+			});
+		},
+	});
+	const project = createSliceMachineProject(adapter);
 
-	const { readCustomTypeLibrary } = createSliceMachineActions(
-		project,
-		hookSystem,
-	);
+	const pluginRunner = createSliceMachinePluginRunner({ project });
+	await pluginRunner.init();
 
-	expect(await readCustomTypeLibrary()).toBe("baz");
-	expect(spy).toHaveBeenCalledWith("custom-type-library:read", undefined);
-
-	vi.resetAllMocks();
+	const res = await pluginRunner.rawActions.readCustomTypeLibrary();
+	expect(res).toStrictEqual({ ids: customTypeIDs });
 });
 
-it("throws when no slice model is returned", async () => {
-	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
-		vi.fn().mockResolvedValue({
-			data: [],
-			errors: [],
-		}),
-	);
-	const { readCustomTypeLibrary } = createSliceMachineActions(
-		project,
-		hookSystem,
-	);
+it("throws when no Custom Type library is returned", async () => {
+	const adapter = createTestAdapter();
+	const project = createSliceMachineProject(adapter);
 
-	await expect(() => readCustomTypeLibrary()).rejects.toThrowError(
-		"Couldn't read Custom Type library.",
-	);
-	expect(spy).toHaveBeenCalledWith("custom-type-library:read", undefined);
+	const pluginRunner = createSliceMachinePluginRunner({ project });
+	await pluginRunner.init();
 
-	vi.resetAllMocks();
+	const fn = () => pluginRunner.rawActions.readCustomTypeLibrary();
+	await expect(fn).rejects.toThrowError("Couldn't read Custom Type library.");
 });

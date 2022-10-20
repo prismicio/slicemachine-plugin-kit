@@ -1,47 +1,46 @@
-import { it, expect, vi } from "vitest";
+import { it, expect } from "vitest";
 
-import * as adapter from "./__fixtures__/adapter";
 import { createSliceMachineProject } from "./__testutils__/createSliceMachineProject";
+import { createTestAdapter } from "./__testutils__/createTestAdapter";
 
-import { createSliceMachineHookSystem } from "../src/createSliceMachineHookSystem";
-import { createSliceMachineActions } from "../src/createSliceMachineActions";
+import { createSliceMachinePluginRunner } from "../src";
 
-const project = createSliceMachineProject(adapter.valid);
-const hookSystem = createSliceMachineHookSystem();
-const args = {
-	libraryID: "foo",
-};
+it("returns Slice library", async () => {
+	const library = {
+		id: "lib",
+		sliceIDs: ["foo", "bar"],
+	};
 
-it("returns slice model", async () => {
-	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
-		vi.fn().mockResolvedValue({
-			data: ["baz"],
-			errors: [],
-		}),
-	);
+	const adapter = createTestAdapter({
+		setup: ({ hook }) => {
+			hook("slice-library:read", async (args) => {
+				if (args.libraryID === library.id) {
+					return library;
+				}
 
-	const { readSliceLibrary } = createSliceMachineActions(project, hookSystem);
+				throw new Error("not implemented");
+			});
+		},
+	});
+	const project = createSliceMachineProject(adapter);
 
-	expect(await readSliceLibrary(args)).toBe("baz");
-	expect(spy).toHaveBeenCalledWith("slice-library:read", args);
+	const pluginRunner = createSliceMachinePluginRunner({ project });
+	await pluginRunner.init();
 
-	vi.resetAllMocks();
+	const res = await pluginRunner.rawActions.readSliceLibrary({
+		libraryID: library.id,
+	});
+	expect(res).toStrictEqual(library);
 });
 
-it("throws when no slice model is returned", async () => {
-	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
-		vi.fn().mockResolvedValue({
-			data: [],
-			errors: [],
-		}),
-	);
-	const { readSliceLibrary } = createSliceMachineActions(project, hookSystem);
+it("throws when no Slice Library is returned", async () => {
+	const adapter = createTestAdapter();
+	const project = createSliceMachineProject(adapter);
 
-	await expect(() => readSliceLibrary(args)).rejects.toThrowError(
-		"Slice library `foo` not found.",
-	);
+	const pluginRunner = createSliceMachinePluginRunner({ project });
+	await pluginRunner.init();
 
-	expect(spy).toHaveBeenCalledWith("slice-library:read", args);
-
-	vi.resetAllMocks();
+	const fn = () =>
+		pluginRunner.rawActions.readSliceLibrary({ libraryID: "foo" });
+	await expect(fn).rejects.toThrowError("Slice library `foo` not found.");
 });

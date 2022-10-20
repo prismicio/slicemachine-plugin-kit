@@ -53,12 +53,11 @@ it("returns all slice models for a library", async (ctx) => {
 it("throws when Slice Library does not exist", async () => {
 	const adapter = createTestAdapter();
 	const project = createSliceMachineProject(adapter);
-	project.config.libraries = [];
 
 	const pluginRunner = createSliceMachinePluginRunner({ project });
 	await pluginRunner.init();
 
 	const fn = () =>
 		pluginRunner.rawActions.readAllSliceModelsForLibrary({ libraryID: "foo" });
-	expect(fn).rejects.toThrowError("Slice library `foo` not found.");
+	await expect(fn).rejects.toThrowError("Slice library `foo` not found.");
 });
