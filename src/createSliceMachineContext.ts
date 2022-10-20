@@ -1,14 +1,7 @@
-import { HookSystem } from "./lib";
-import {
-	createSliceMachineActions,
-	SliceMachineActions,
-} from "./createSliceMachineActions";
+import { SliceMachineActions } from "./createSliceMachineActions";
+import { SliceMachineHelpers } from "./createSliceMachineHelpers";
 import { LoadedSliceMachinePlugin } from "./defineSliceMachinePlugin";
-import { SliceMachineHooks, SliceMachineProject } from "./types";
-import {
-	createSliceMachineHelpers,
-	SliceMachineHelpers,
-} from "./createSliceMachineHelpers";
+import { SliceMachineProject } from "./types";
 
 /**
  * Slice Machine context shared to plugins and hooks.
@@ -23,20 +16,35 @@ export type SliceMachineContext<
 };
 
 /**
+ * Arguments for `createSliceMachineContext()`.
+ *
+ * @typeParam TPluginOptions - Options for the plugin's context.
+ */
+type CreateSliceMachineContextArgs<
+	TPluginOptions extends Record<string, unknown>,
+> = {
+	project: SliceMachineProject;
+	helpers: SliceMachineHelpers;
+	actions: SliceMachineActions;
+	plugin: LoadedSliceMachinePlugin<TPluginOptions>;
+};
+
+/**
  * Creates Slice Machine context.
  *
  * @internal
  */
 export const createSliceMachineContext = <
 	TPluginOptions extends Record<string, unknown>,
->(
-	project: SliceMachineProject,
-	hookSystem: HookSystem<SliceMachineHooks>,
-	plugin: LoadedSliceMachinePlugin<TPluginOptions>,
-): SliceMachineContext<TPluginOptions> => {
+>({
+	actions,
+	helpers,
+	project,
+	plugin,
+}: CreateSliceMachineContextArgs<TPluginOptions>): SliceMachineContext<TPluginOptions> => {
 	return {
-		actions: createSliceMachineActions(project, hookSystem),
-		helpers: createSliceMachineHelpers(project),
+		actions,
+		helpers,
 		project,
 		options: plugin.options,
 	};

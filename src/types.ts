@@ -74,7 +74,6 @@ export type ExtendSliceMachineHook<
 ) => ReturnType<THook>;
 
 export const SliceMachineHookType = {
-	__debug__: "__debug__",
 	slice_create: "slice:create",
 	slice_update: "slice:update",
 	slice_delete: "slice:delete",
@@ -93,9 +92,6 @@ export type SliceMachineHookTypes =
 	typeof SliceMachineHookType[keyof typeof SliceMachineHookType];
 
 export type SliceMachineHooks = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[SliceMachineHookType.__debug__]: Hook<SliceMachineHook<any, any>>;
-
 	// Slices
 	[SliceMachineHookType.slice_create]: Hook<SliceCreateHookBase>;
 	[SliceMachineHookType.slice_update]: Hook<SliceUpdateHookBase>;

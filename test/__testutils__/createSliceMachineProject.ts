@@ -1,9 +1,7 @@
 import { SliceMachinePlugin, SliceMachineProject } from "../../src";
 
-import { createTestAdapter } from "./createTestAdapter";
-
 export const createSliceMachineProject = (
-	adapter: string | SliceMachinePlugin = createTestAdapter(),
+	adapter: string | SliceMachinePlugin,
 	plugins?: (string | SliceMachinePlugin)[],
 ): SliceMachineProject => {
 	return {

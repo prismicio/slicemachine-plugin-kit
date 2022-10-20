@@ -31,7 +31,7 @@ export class SliceMachineHelpers {
 		this.project = project;
 	}
 
-	async getProject(): Promise<SliceMachineProject> {
+	getProject = async (): Promise<SliceMachineProject> => {
 		const configFilePath = this.joinPathFromRoot("sm.json");
 		const configContents = await fs.readFile(configFilePath, "utf8");
 		const config = JSON.parse(configContents);
@@ -40,13 +40,13 @@ export class SliceMachineHelpers {
 			...this.project,
 			config,
 		};
-	}
+	};
 
-	async format(
+	format = async (
 		source: string,
 		filePath?: string,
 		options?: FormatOptions,
-	): Promise<string> {
+	): Promise<string> => {
 		let formatted = stripIndent(source);
 
 		const prettierOptions = await prettier.resolveConfig(
@@ -60,9 +60,9 @@ export class SliceMachineHelpers {
 		});
 
 		return formatted;
-	}
+	};
 
-	joinPathFromRoot(...paths: string[]): string {
+	joinPathFromRoot = (...paths: string[]): string => {
 		return path.join(this.project.root, ...paths);
-	}
+	};
 }
