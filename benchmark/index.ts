@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/no-explicit-any: "off", @typescript-eslint/no-non-null-assertion: "off" */
+/* eslint no-console: "off", @typescript-eslint/no-explicit-any: "off", @typescript-eslint/no-non-null-assertion: "off" */
 import * as fs from "node:fs/promises";
 import { Bench, Task } from "tinybench";
 import * as path from "node:path";
@@ -10,10 +10,8 @@ import {
 } from "@slicemachine/plugin-kit";
 
 const resultsPrinter = (task: Task) => {
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const result = task.result!;
 
-	// eslint-disable-next-line no-console
 	console.log(`${task.name} x ${Math.floor(result.hz)} ops/s`);
 };
 
@@ -24,7 +22,6 @@ export const runBench = async (bench: Bench): Promise<void> => {
 	bench.tasks.forEach(resultsPrinter);
 
 	const sorted = bench.tasks.sort((a, b) => {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return b.result!.hz - a.result!.hz;
 	});
 
@@ -32,11 +29,9 @@ export const runBench = async (bench: Bench): Promise<void> => {
 	const nextFastest = sorted[1];
 
 	const delta =
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		Math.round((fastest.result!.hz / nextFastest.result!.hz - 1) * 100 * 100) /
 		100;
 
-	// eslint-disable-next-line no-console
 	console.log(
 		`Fastest is ${sorted[0].name} (${delta}% faster than runner-up)\n`,
 	);
