@@ -13,7 +13,6 @@ export type { SliceMachineHelpers } from "./createSliceMachineHelpers";
 export type { SliceMachineContext } from "./createSliceMachineContext";
 
 export {
-	SliceMachineHooks,
 	SliceMachineHookType,
 	SnippetReadHookDataRootModelType,
 	SliceSimulatorSetupStepValidationMessageType,
@@ -27,6 +26,7 @@ export type {
 	// Public hooks
 	//
 	// -- types
+	SliceMachineHooks,
 	SliceMachineHookTypes,
 	//
 	// -- slice:create
