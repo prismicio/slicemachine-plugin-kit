@@ -32,19 +32,37 @@ export type {
 	// -- slice:create
 	SliceCreateHook,
 	SliceCreateHookData,
+	SliceCreateHookReturnType,
 	//
 	// -- slice:update
 	SliceUpdateHook,
 	SliceUpdateHookData,
+	SliceUpdateHookReturnType,
 	//
 	// -- slice:delete
 	SliceDeleteHook,
 	SliceDeleteHookData,
+	SliceDeleteHookReturnType,
 	//
 	// -- slice:read
 	SliceReadHook,
 	SliceReadHookData,
 	SliceReadHookReturnType,
+	//
+	// -- slice:asset:update
+	SliceAssetUpdateHook,
+	SliceAssetUpdateHookData,
+	SliceAssetUpdateHookReturnType,
+	//
+	// -- slice:asset:delete
+	SliceAssetDeleteHook,
+	SliceAssetDeleteHookData,
+	SliceAssetDeleteHookReturnType,
+	//
+	// -- slice:asset:read
+	SliceAssetReadHook,
+	SliceAssetReadHookData,
+	SliceAssetReadHookReturnType,
 	//
 	// -- slice-library:read
 	SliceLibraryReadHook,
@@ -54,19 +72,37 @@ export type {
 	// -- customType:create
 	CustomTypeCreateHook,
 	CustomTypeCreateHookData,
+	CustomTypeCreateHookReturnType,
 	//
 	// -- customType:update
 	CustomTypeUpdateHook,
 	CustomTypeUpdateHookData,
+	CustomTypeUpdateHookReturnType,
 	//
 	// -- customType:delete
 	CustomTypeDeleteHook,
 	CustomTypeDeleteHookData,
+	CustomTypeDeleteHookReturnType,
 	//
 	// -- customType:read
 	CustomTypeReadHook,
 	CustomTypeReadHookData,
 	CustomTypeReadHookReturnType,
+	//
+	// -- custom-type:asset:update
+	CustomTypeAssetUpdateHook,
+	CustomTypeAssetUpdateHookData,
+	CustomTypeAssetUpdateHookReturnType,
+	//
+	// -- custom-type:asset:delete
+	CustomTypeAssetDeleteHook,
+	CustomTypeAssetDeleteHookData,
+	CustomTypeAssetDeleteHookReturnType,
+	//
+	// -- custom-type:asset:read
+	CustomTypeAssetReadHook,
+	CustomTypeAssetReadHookData,
+	CustomTypeAssetReadHookReturnType,
 	//
 	// -- custom-type-library:read
 	CustomTypeLibraryReadHook,
