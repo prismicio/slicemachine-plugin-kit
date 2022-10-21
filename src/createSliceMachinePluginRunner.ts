@@ -14,6 +14,14 @@ import {
 	SliceMachineProject,
 } from "./types";
 import { createSliceMachineHookSystem } from "./createSliceMachineHookSystem";
+import {
+	createSliceMachineActions,
+	SliceMachineActions,
+} from "./createSliceMachineActions";
+import {
+	createSliceMachineHelpers,
+	SliceMachineHelpers,
+} from "./createSliceMachineHelpers";
 
 /**
  * @internal
@@ -42,6 +50,26 @@ export class SliceMachinePluginRunner {
 	private _project: SliceMachineProject;
 	private _hookSystem: HookSystem<SliceMachineHooks>;
 
+	/**
+	 * Slice Machine actions provided to hooks.
+	 *
+	 * IMPORTANT: Prefer creating your own abstraction over using `rawActions`
+	 * directly to prevent code breakage if this internal API changes.
+	 *
+	 * @internal
+	 */
+	rawActions: SliceMachineActions;
+
+	/**
+	 * Slice Machine helpers provided to hooks.
+	 *
+	 * IMPORTANT: Prefer creating your own abstraction over using `rawHelpers`
+	 * directly to prevent code breakage if this internal API changes.
+	 *
+	 * @internal
+	 */
+	rawHelpers: SliceMachineHelpers;
+
 	// Methods forwarded to the plugin runner's hook system.
 	callHook: HookSystem<SliceMachineHooks>["callHook"];
 	hooksForOwner: HookSystem<SliceMachineHooks>["hooksForOwner"];
@@ -54,6 +82,12 @@ export class SliceMachinePluginRunner {
 	}: SliceMachinePluginRunnerConstructorArgs) {
 		this._project = project;
 		this._hookSystem = hookSystem;
+
+		this.rawActions = createSliceMachineActions(
+			this._project,
+			this._hookSystem,
+		);
+		this.rawHelpers = createSliceMachineHelpers(this._project);
 
 		this.callHook = this._hookSystem.callHook.bind(this._hookSystem);
 		this.hooksForOwner = this._hookSystem.hooksForOwner.bind(this._hookSystem);
@@ -70,12 +104,17 @@ export class SliceMachinePluginRunner {
 				? pluginRegistration
 				: { resolve: pluginRegistration };
 
-		let plugin: SliceMachinePlugin;
+		let plugin: SliceMachinePlugin | undefined = undefined;
 
 		if (typeof resolve === "string") {
 			// Import plugin
-			const raw = await import(resolve);
-			plugin = raw.default || raw;
+			try {
+				const raw = await import(resolve);
+				plugin = raw.default || raw;
+			} catch {
+				// If the plugin could not be imported, we will
+				// throw a custom error later.
+			}
 		} else {
 			plugin = resolve;
 		}
@@ -97,11 +136,12 @@ export class SliceMachinePluginRunner {
 		plugin: LoadedSliceMachinePlugin,
 		as: "adapter" | "plugin",
 	): Promise<void> {
-		const context = createSliceMachineContext(
-			this._project,
-			this._hookSystem,
+		const context = createSliceMachineContext({
+			actions: this.rawActions,
+			helpers: this.rawHelpers,
+			project: this._project,
 			plugin,
-		);
+		});
 		const hookSystemScope =
 			this._hookSystem.createScope<SliceMachineHookExtraArgs>(
 				plugin.meta.name,

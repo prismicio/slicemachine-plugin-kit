@@ -1,21 +1,28 @@
 import { HookSystem } from "./lib";
 import {
-	SliceMachineProject,
+	CustomTypeLibraryReadHookReturnType,
+	CustomTypeReadHookData,
+	CustomTypeReadHookReturnType,
+	SliceLibraryReadHookData,
+	SliceLibraryReadHookReturnType,
 	SliceMachineHooks,
-	SliceReadHookBase,
-	SliceLibraryReadHookBase,
-	CustomTypeReadHookBase,
-	CustomTypeLibraryReadHookBase,
+	SliceMachineProject,
+	SliceReadHookData,
+	SliceReadHookReturnType,
 } from "./types";
 
-/**
- * Slice Machine actions shared to plugins and hooks.
- */
-export type SliceMachineActions = {
-	readSliceModel: SliceReadHookBase;
-	readSliceLibrary: SliceLibraryReadHookBase;
-	readCustomTypeModel: CustomTypeReadHookBase;
-	readCustomTypeLibrary: CustomTypeLibraryReadHookBase;
+export type ReadAllSliceModelsActionArgs<
+	TWithMetadata extends boolean = false,
+> = {
+	withMetadata?: TWithMetadata;
+};
+
+export type ReadAllSliceModelsActionReturnType = (SliceReadHookReturnType & {
+	libraryID: string;
+})[];
+
+export type ReadAllSliceModelsForLibraryActionArgs = {
+	libraryID: string;
 };
 
 /**
@@ -24,66 +31,154 @@ export type SliceMachineActions = {
  * @internal
  */
 export const createSliceMachineActions = (
-	_project: SliceMachineProject,
+	project: SliceMachineProject,
 	hookSystem: HookSystem<SliceMachineHooks>,
 ): SliceMachineActions => {
-	return {
-		readSliceModel: async (args) => {
-			const {
-				data: [model],
-				errors: [cause],
-			} = await hookSystem.callHook("slice:read", {
-				libraryID: args.libraryID,
-				sliceID: args.sliceID,
-			});
+	return new SliceMachineActions(project, hookSystem);
+};
 
-			if (!model) {
-				throw new Error(
-					`Slice \`${args.sliceID}\` not found in the \`${args.libraryID}\` library.`,
-					{ cause },
-				);
-			}
+/**
+ * Slice Machine actions shared to plugins and hooks.
+ */
+export class SliceMachineActions {
+	/**
+	 * The Slice Machine project's metadata.
+	 *
+	 * @internal
+	 */
+	private _project: SliceMachineProject;
+	/**
+	 * The actions' hook system used to internally trigger hook calls.
+	 *
+	 * @internal
+	 */
+	private _hookSystem: HookSystem<SliceMachineHooks>;
 
-			return model;
-		},
+	constructor(
+		project: SliceMachineProject,
+		hookSystem: HookSystem<SliceMachineHooks>,
+	) {
+		this._project = project;
+		this._hookSystem = hookSystem;
+	}
 
-		readSliceLibrary: async (args) => {
-			const {
-				data: [library],
-				errors: [cause],
-			} = await hookSystem.callHook("slice-library:read", {
-				libraryID: args.libraryID,
-			});
+	readAllSliceModels =
+		async (): Promise<ReadAllSliceModelsActionReturnType> => {
+			const libraryIDs = this._project.config.libraries || [];
 
-			if (!library) {
-				throw new Error(`Slice library \`${args.libraryID}\` not found.`, {
-					cause,
+			return (
+				await Promise.all(
+					libraryIDs.map(async (libraryID) => {
+						const models = await this.readAllSliceModelsForLibrary({
+							libraryID,
+						});
+
+						return models.map((model) => {
+							return {
+								libraryID,
+								...model,
+							};
+						});
+					}),
+				)
+			).flat();
+		};
+
+	readAllSliceModelsForLibrary = async (
+		args: ReadAllSliceModelsForLibraryActionArgs,
+	): Promise<SliceReadHookReturnType[]> => {
+		const { sliceIDs } = await this.readSliceLibrary({
+			libraryID: args.libraryID,
+		});
+
+		return await Promise.all(
+			sliceIDs.map(async (sliceID) => {
+				return await this.readSliceModel({
+					libraryID: args.libraryID,
+					sliceID,
 				});
-			}
+			}),
+		);
+	};
 
-			return library;
-		},
+	readSliceModel = async (
+		args: SliceReadHookData,
+	): Promise<SliceReadHookReturnType> => {
+		const {
+			data: [model],
+			errors: [cause],
+		} = await this._hookSystem.callHook("slice:read", {
+			libraryID: args.libraryID,
+			sliceID: args.sliceID,
+		});
 
-		readCustomTypeModel: async (args) => {
-			const {
-				data: [model],
-				errors: [cause],
-			} = await hookSystem.callHook("custom-type:read", {
-				id: args.id,
+		if (!model) {
+			throw new Error(
+				`Slice \`${args.sliceID}\` not found in the \`${args.libraryID}\` library.`,
+				{ cause },
+			);
+		}
+
+		return model;
+	};
+
+	readSliceLibrary = async (
+		args: SliceLibraryReadHookData,
+	): Promise<SliceLibraryReadHookReturnType> => {
+		const {
+			data: [library],
+			errors: [cause],
+		} = await this._hookSystem.callHook("slice-library:read", {
+			libraryID: args.libraryID,
+		});
+
+		if (!library) {
+			throw new Error(`Slice library \`${args.libraryID}\` not found.`, {
+				cause,
 			});
+		}
 
-			if (!model) {
-				throw new Error(`Custom Type \`${args.id}\` not found.`, { cause });
-			}
+		return library;
+	};
 
-			return model;
-		},
+	readAllCustomTypeModels = async (): Promise<
+		CustomTypeReadHookReturnType[]
+	> => {
+		const { ids } = await this.readCustomTypeLibrary();
 
-		readCustomTypeLibrary: async () => {
+		return await Promise.all(
+			ids.map(async (id) => {
+				return this.readCustomTypeModel({ id });
+			}),
+		);
+	};
+
+	readCustomTypeModel = async (
+		args: CustomTypeReadHookData,
+	): Promise<CustomTypeReadHookReturnType> => {
+		const {
+			data: [model],
+			errors: [cause],
+		} = await this._hookSystem.callHook("custom-type:read", {
+			id: args.id,
+		});
+
+		if (!model) {
+			throw new Error(`Custom Type \`${args.id}\` not found.`, { cause });
+		}
+
+		return model;
+	};
+
+	readCustomTypeLibrary =
+		async (): Promise<CustomTypeLibraryReadHookReturnType> => {
 			const {
 				data: [library],
 				errors: [cause],
-			} = await hookSystem.callHook("custom-type-library:read", {});
+			} = await this._hookSystem.callHook(
+				"custom-type-library:read",
+				undefined,
+			);
 
 			if (!library) {
 				throw new Error(`Couldn't read Custom Type library.`, {
@@ -92,6 +187,5 @@ export const createSliceMachineActions = (
 			}
 
 			return library;
-		},
-	};
-};
+		};
+}

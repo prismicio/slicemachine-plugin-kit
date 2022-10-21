@@ -106,12 +106,10 @@ it("loads plugin from direct definition with options", async () => {
 });
 
 it("throws when plugin could not be loaded", async (ctx) => {
-	vi.mock(ctx.meta.name, () => false);
+	const nonExistentModuleName = ctx.meta.name;
 
-	// @ts-expect-error - Calling private method
-	await expect(pluginRunner._loadPlugin(ctx.meta.name)).rejects.toThrowError(
-		`Could not load plugin: \`${ctx.meta.name}\``,
-	);
-
-	vi.unmock(ctx.meta.name);
+	await expect(
+		// @ts-expect-error - Calling private method
+		pluginRunner._loadPlugin(nonExistentModuleName),
+	).rejects.toThrowError(`Could not load plugin: \`${ctx.meta.name}\``);
 });

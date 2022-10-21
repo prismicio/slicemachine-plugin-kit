@@ -3,7 +3,12 @@
 export { defineSliceMachinePlugin } from "./defineSliceMachinePlugin";
 export type { SliceMachinePlugin } from "./defineSliceMachinePlugin";
 
-export type { SliceMachineActions } from "./createSliceMachineActions";
+export type {
+	SliceMachineActions,
+	ReadAllSliceModelsActionArgs,
+	ReadAllSliceModelsActionReturnType,
+	ReadAllSliceModelsForLibraryActionArgs,
+} from "./createSliceMachineActions";
 export type { SliceMachineHelpers } from "./createSliceMachineHelpers";
 export type { SliceMachineContext } from "./createSliceMachineContext";
 
@@ -21,6 +26,7 @@ export type {
 	// Public hooks
 	//
 	// -- types
+	SliceMachineHooks,
 	SliceMachineHookTypes,
 	//
 	// -- slice:create

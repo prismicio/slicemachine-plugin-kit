@@ -1,52 +1,42 @@
-import { it, expect, vi } from "vitest";
+import { it, expect } from "vitest";
 
-import * as adapter from "./__fixtures__/adapter";
 import { createSliceMachineProject } from "./__testutils__/createSliceMachineProject";
+import { createTestAdapter } from "./__testutils__/createTestAdapter";
 
-import { createSliceMachineHookSystem } from "../src/createSliceMachineHookSystem";
-import { createSliceMachineActions } from "../src/createSliceMachineActions";
+import { createSliceMachinePluginRunner } from "../src";
 
-const project = createSliceMachineProject(adapter.valid);
-const hookSystem = createSliceMachineHookSystem();
-const args = {
-	id: "foo",
-};
+it("returns Custom Type model", async (ctx) => {
+	const model = ctx.mock.model.customType();
 
-it("returns slice model", async () => {
-	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
-		vi.fn().mockResolvedValue({
-			data: ["baz"],
-			errors: [],
-		}),
-	);
+	const adapter = createTestAdapter({
+		setup: ({ hook }) => {
+			hook("custom-type:read", async (args) => {
+				if (args.id === model.id) {
+					return { model };
+				}
 
-	const { readCustomTypeModel } = createSliceMachineActions(
-		project,
-		hookSystem,
-	);
+				throw new Error("not implemented");
+			});
+		},
+	});
+	const project = createSliceMachineProject(adapter);
 
-	expect(await readCustomTypeModel(args)).toBe("baz");
-	expect(spy).toHaveBeenCalledWith("custom-type:read", args);
+	const pluginRunner = createSliceMachinePluginRunner({ project });
+	await pluginRunner.init();
 
-	vi.resetAllMocks();
+	const res = await pluginRunner.rawActions.readCustomTypeModel({
+		id: model.id,
+	});
+	expect(res).toStrictEqual({ model });
 });
 
-it("throws when no slice model is returned", async () => {
-	const spy = vi.spyOn(hookSystem, "callHook").mockImplementation(
-		vi.fn().mockResolvedValue({
-			data: [],
-			errors: [],
-		}),
-	);
-	const { readCustomTypeModel } = createSliceMachineActions(
-		project,
-		hookSystem,
-	);
+it("throws when no Custom Type model is returned", async () => {
+	const adapter = createTestAdapter();
+	const project = createSliceMachineProject(adapter);
 
-	await expect(() => readCustomTypeModel(args)).rejects.toThrowError(
-		"Custom Type `foo` not found.",
-	);
-	expect(spy).toHaveBeenCalledWith("custom-type:read", args);
+	const pluginRunner = createSliceMachinePluginRunner({ project });
+	await pluginRunner.init();
 
-	vi.resetAllMocks();
+	const fn = () => pluginRunner.rawActions.readCustomTypeModel({ id: "foo" });
+	await expect(fn).rejects.toThrowError("Custom Type `foo` not found.");
 });

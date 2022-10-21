@@ -1,6 +1,3 @@
-// TODO: This may need to be replaced with @prismicio/types-internal.
-//       Be aware of the implications of exposing @prismicio/types-internal as
-//       part of the public API; it would no longer be "internal."
 import * as prismicT from "@prismicio/types";
 
 import { SliceMachineContext } from "./createSliceMachineContext";
@@ -263,7 +260,7 @@ export type CustomTypeLibraryReadHookReturnType = {
 	ids: string[];
 };
 export type CustomTypeLibraryReadHookBase = SliceMachineHook<
-	Record<string, never>,
+	undefined,
 	CustomTypeLibraryReadHookReturnType
 >;
 export type CustomTypeLibraryReadHook<
