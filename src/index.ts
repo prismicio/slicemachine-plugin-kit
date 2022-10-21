@@ -1,4 +1,8 @@
+///////////////////////////////////////////////////////////////////////////////
+//
 // Public (for plugin authors)
+//
+///////////////////////////////////////////////////////////////////////////////
 
 export { defineSliceMachinePlugin } from "./defineSliceMachinePlugin";
 export type { SliceMachinePlugin } from "./defineSliceMachinePlugin";
@@ -12,118 +16,160 @@ export type {
 export type { SliceMachineHelpers } from "./createSliceMachineHelpers";
 export type { SliceMachineContext } from "./createSliceMachineContext";
 
-export {
-	SliceMachineHookType,
-	SnippetReadHookDataRootModelType,
-	SliceSimulatorSetupStepValidationMessageType,
-} from "./types";
-
+export { SliceMachineHookType } from "./types";
 export type {
 	PluginOptions,
 	SliceMachineProject,
 	SliceMachineConfig,
 	SliceLibrary,
-	// Public hooks
-	//
-	// -- types
 	SliceMachineHooks,
 	SliceMachineHookTypes,
-	//
-	// -- slice:create
-	SliceCreateHook,
-	SliceCreateHookData,
-	SliceCreateHookReturnType,
-	//
-	// -- slice:update
-	SliceUpdateHook,
-	SliceUpdateHookData,
-	SliceUpdateHookReturnType,
-	//
-	// -- slice:delete
-	SliceDeleteHook,
-	SliceDeleteHookData,
-	SliceDeleteHookReturnType,
-	//
-	// -- slice:read
-	SliceReadHook,
-	SliceReadHookData,
-	SliceReadHookReturnType,
-	//
-	// -- slice:asset:update
-	SliceAssetUpdateHook,
-	SliceAssetUpdateHookData,
-	SliceAssetUpdateHookReturnType,
-	//
-	// -- slice:asset:delete
-	SliceAssetDeleteHook,
-	SliceAssetDeleteHookData,
-	SliceAssetDeleteHookReturnType,
-	//
-	// -- slice:asset:read
-	SliceAssetReadHook,
-	SliceAssetReadHookData,
-	SliceAssetReadHookReturnType,
-	//
-	// -- slice-library:read
-	SliceLibraryReadHook,
-	SliceLibraryReadHookData,
-	SliceLibraryReadHookReturnType,
-	//
-	// -- customType:create
-	CustomTypeCreateHook,
-	CustomTypeCreateHookData,
-	CustomTypeCreateHookReturnType,
-	//
-	// -- customType:update
-	CustomTypeUpdateHook,
-	CustomTypeUpdateHookData,
-	CustomTypeUpdateHookReturnType,
-	//
-	// -- customType:delete
-	CustomTypeDeleteHook,
-	CustomTypeDeleteHookData,
-	CustomTypeDeleteHookReturnType,
-	//
-	// -- customType:read
-	CustomTypeReadHook,
-	CustomTypeReadHookData,
-	CustomTypeReadHookReturnType,
-	//
-	// -- custom-type:asset:update
-	CustomTypeAssetUpdateHook,
-	CustomTypeAssetUpdateHookData,
-	CustomTypeAssetUpdateHookReturnType,
-	//
-	// -- custom-type:asset:delete
-	CustomTypeAssetDeleteHook,
-	CustomTypeAssetDeleteHookData,
-	CustomTypeAssetDeleteHookReturnType,
-	//
-	// -- custom-type:asset:read
-	CustomTypeAssetReadHook,
-	CustomTypeAssetReadHookData,
-	CustomTypeAssetReadHookReturnType,
-	//
-	// -- custom-type-library:read
-	CustomTypeLibraryReadHook,
-	CustomTypeLibraryReadHookReturnType,
-	//
-	// -- snippet:read
-	SnippetReadHook,
-	SnippetReadHookData,
-	SnippetReadHookReturnType,
-	SnippetDescriptor,
-	//
-	// -- slice-simulator:setup:read
-	SliceSimulatorSetupReadHook,
-	SliceSimulatorSetupReadHookReturnType,
-	SliceSimulatorSetupStep,
-	SliceSimulatorSetupStepValidationMessage,
 } from "./types";
 
 export { HookError } from "./lib";
 
+///////////////////////////////////////////////////////////////////////////////
+//
+// Hooks (for plugin authors)
+//
+///////////////////////////////////////////////////////////////////////////////
+
+// slice:asset:update
+export type {
+	SliceAssetUpdateHook,
+	SliceAssetUpdateHookData,
+	SliceAssetUpdateHookReturnType,
+} from "./hooks/slice-asset-update";
+
+// slice:asset:delete
+export type {
+	SliceAssetDeleteHook,
+	SliceAssetDeleteHookData,
+	SliceAssetDeleteHookReturnType,
+} from "./hooks/slice-asset-delete";
+
+// slice:asset:read
+export type {
+	SliceAssetReadHook,
+	SliceAssetReadHookData,
+	SliceAssetReadHookReturnType,
+} from "./hooks/slice-asset-read";
+
+// slice:create
+export type {
+	SliceCreateHook,
+	SliceCreateHookData,
+	SliceCreateHookReturnType,
+} from "./hooks/slice-create";
+
+// slice:update
+export type {
+	SliceUpdateHook,
+	SliceUpdateHookData,
+	SliceUpdateHookReturnType,
+} from "./hooks/slice-update";
+
+// slice:delete
+export type {
+	SliceDeleteHook,
+	SliceDeleteHookData,
+	SliceDeleteHookReturnType,
+} from "./hooks/slice-delete";
+
+// slice:read
+export type {
+	SliceReadHook,
+	SliceReadHookData,
+	SliceReadHookReturnType,
+} from "./hooks/slice-read";
+
+// slice-library:read
+export type {
+	SliceLibraryReadHook,
+	SliceLibraryReadHookData,
+	SliceLibraryReadHookReturnType,
+} from "./hooks/sliceLibrary-read";
+
+// custom-type:asset:update
+export type {
+	CustomTypeAssetUpdateHook,
+	CustomTypeAssetUpdateHookData,
+	CustomTypeAssetUpdateHookReturnType,
+} from "./hooks/customType-asset-update";
+
+// custom-type:asset:delete
+export type {
+	CustomTypeAssetDeleteHook,
+	CustomTypeAssetDeleteHookData,
+	CustomTypeAssetDeleteHookReturnType,
+} from "./hooks/customType-asset-delete";
+
+// custom-type:asset:read
+export type {
+	CustomTypeAssetReadHook,
+	CustomTypeAssetReadHookData,
+	CustomTypeAssetReadHookReturnType,
+} from "./hooks/customType-asset-read";
+
+// custom-type:create
+export type {
+	CustomTypeCreateHook,
+	CustomTypeCreateHookData,
+	CustomTypeCreateHookReturnType,
+} from "./hooks/customType-create";
+
+// custom-type:update
+export type {
+	CustomTypeUpdateHook,
+	CustomTypeUpdateHookData,
+	CustomTypeUpdateHookReturnType,
+} from "./hooks/customType-update";
+
+// custom-type:delete
+export type {
+	CustomTypeDeleteHook,
+	CustomTypeDeleteHookData,
+	CustomTypeDeleteHookReturnType,
+} from "./hooks/customType-delete";
+
+// custom-type:read
+export type {
+	CustomTypeReadHook,
+	CustomTypeReadHookData,
+	CustomTypeReadHookReturnType,
+} from "./hooks/customType-read";
+
+// custom-type-library:read
+export type {
+	CustomTypeLibraryReadHook,
+	CustomTypeLibraryReadHookData,
+	CustomTypeLibraryReadHookReturnType,
+} from "./hooks/customTypeLibrary-read";
+
+// snippet:read
+export { SnippetReadHookDataRootModelType } from "./hooks/snippet-read";
+export type {
+	SnippetReadHook,
+	SnippetReadHookData,
+	SnippetReadHookReturnType,
+	Snippet,
+} from "./hooks/snippet-read";
+
+// slice-simulator-setup:read
+export { SliceSimulatorSetupStepValidationMessageType } from "./hooks/sliceSimulator-setup-read";
+export type {
+	SliceSimulatorSetupReadHook,
+	SliceSimulatorSetupReadHookData,
+	SliceSimulatorSetupReadHookReturnType,
+	SliceSimulatorSetupStep,
+	SliceSimulatorSetupStepValidationMessage,
+} from "./hooks/sliceSimulator-setup-read";
+
+///////////////////////////////////////////////////////////////////////////////
+//
 // Internal (for Slice Machine)
+//
+///////////////////////////////////////////////////////////////////////////////
 
 export { createSliceMachinePluginRunner } from "./createSliceMachinePluginRunner";
 export type { SliceMachinePluginRunner } from "./createSliceMachinePluginRunner";
