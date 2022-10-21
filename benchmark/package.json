@@ -1,0 +1,14 @@
+{
+	"name": "benchmark",
+	"type": "module",
+	"scripts": {
+		"test": "tsx ./index.ts"
+	},
+	"dependencies": {
+		"@slicemachine/plugin-kit": "../",
+		"tinybench": "^2.3.1"
+	},
+	"devDependencies": {
+		"tsx": "^3.10.4"
+	}
+}
