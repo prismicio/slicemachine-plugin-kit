@@ -23,9 +23,9 @@ export type SliceMachineContext<
 type CreateSliceMachineContextArgs<
 	TPluginOptions extends Record<string, unknown>,
 > = {
-	project: SliceMachineProject;
-	helpers: SliceMachineHelpers;
 	actions: SliceMachineActions;
+	helpers: SliceMachineHelpers;
+	project: SliceMachineProject;
 	plugin: LoadedSliceMachinePlugin<TPluginOptions>;
 };
 
