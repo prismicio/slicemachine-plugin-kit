@@ -78,13 +78,22 @@ export const SliceMachineHookType = {
 	slice_update: "slice:update",
 	slice_delete: "slice:delete",
 	slice_read: "slice:read",
+	slice_asset_update: "slice:asset:update",
+	slice_asset_delete: "slice:asset:delete",
+	slice_asset_read: "slice:asset:read",
 	sliceLibrary_read: "slice-library:read",
+
 	customType_create: "custom-type:create",
 	customType_update: "custom-type:update",
 	customType_delete: "custom-type:delete",
 	customType_read: "custom-type:read",
+	customType_asset_update: "custom-type:asset:update",
+	customType_asset_delete: "custom-type:asset:delete",
+	customType_asset_read: "custom-type:asset:read",
 	customTypeLibrary_read: "custom-type-library:read",
+
 	snippet_read: "snippet:read",
+
 	sliceSimulator_setup_read: "slice-simulator:setup:read",
 } as const;
 
@@ -97,6 +106,9 @@ export type SliceMachineHooks = {
 	[SliceMachineHookType.slice_update]: Hook<SliceUpdateHookBase>;
 	[SliceMachineHookType.slice_delete]: Hook<SliceDeleteHookBase>;
 	[SliceMachineHookType.slice_read]: Hook<SliceReadHookBase>;
+	[SliceMachineHookType.slice_asset_update]: Hook<SliceAssetUpdateHookBase>;
+	[SliceMachineHookType.slice_asset_delete]: Hook<SliceAssetDeleteHookBase>;
+	[SliceMachineHookType.slice_asset_read]: Hook<SliceAssetReadHookBase>;
 
 	// Slice Libraries
 	[SliceMachineHookType.sliceLibrary_read]: Hook<SliceLibraryReadHookBase>;
@@ -106,6 +118,9 @@ export type SliceMachineHooks = {
 	[SliceMachineHookType.customType_update]: Hook<CustomTypeUpdateHookBase>;
 	[SliceMachineHookType.customType_delete]: Hook<CustomTypeDeleteHookBase>;
 	[SliceMachineHookType.customType_read]: Hook<CustomTypeReadHookBase>;
+	[SliceMachineHookType.customType_asset_update]: Hook<CustomTypeAssetUpdateHookBase>;
+	[SliceMachineHookType.customType_asset_delete]: Hook<CustomTypeAssetDeleteHookBase>;
+	[SliceMachineHookType.customType_asset_read]: Hook<CustomTypeAssetReadHookBase>;
 
 	// Custom Type Libraries
 	[SliceMachineHookType.customTypeLibrary_read]: Hook<CustomTypeLibraryReadHookBase>;
@@ -125,7 +140,11 @@ export type SliceCreateHookData = {
 	libraryID: string;
 	model: prismicT.SharedSliceModel;
 };
-export type SliceCreateHookBase = SliceMachineHook<SliceCreateHookData, void>;
+export type SliceCreateHookReturnType = void;
+export type SliceCreateHookBase = SliceMachineHook<
+	SliceCreateHookData,
+	SliceCreateHookReturnType
+>;
 export type SliceCreateHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
 > = ExtendSliceMachineHook<SliceCreateHookBase, TPluginOptions>;
@@ -138,7 +157,11 @@ export type SliceUpdateHookData = {
 	libraryID: string;
 	model: prismicT.SharedSliceModel;
 };
-export type SliceUpdateHookBase = SliceMachineHook<SliceUpdateHookData, void>;
+export type SliceUpdateHookReturnType = void;
+export type SliceUpdateHookBase = SliceMachineHook<
+	SliceUpdateHookData,
+	SliceUpdateHookReturnType
+>;
 export type SliceUpdateHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
 > = ExtendSliceMachineHook<SliceUpdateHookBase, TPluginOptions>;
@@ -151,7 +174,11 @@ export type SliceDeleteHookData = {
 	libraryID: string;
 	model: prismicT.SharedSliceModel;
 };
-export type SliceDeleteHookBase = SliceMachineHook<SliceDeleteHookData, void>;
+export type SliceDeleteHookReturnType = void;
+export type SliceDeleteHookBase = SliceMachineHook<
+	SliceDeleteHookData,
+	SliceDeleteHookReturnType
+>;
 export type SliceDeleteHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
 > = ExtendSliceMachineHook<SliceDeleteHookBase, TPluginOptions>;
@@ -172,6 +199,65 @@ export type SliceReadHookBase = SliceMachineHook<
 export type SliceReadHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
 > = ExtendSliceMachineHook<SliceReadHookBase, TPluginOptions>;
+
+// ============================================================================
+// ## slice:asset:update
+// ============================================================================
+
+export type SliceAssetUpdateHookData = {
+	libraryID: string;
+	sliceID: string;
+	asset: {
+		id: string;
+		data: Buffer;
+	};
+};
+export type SliceAssetUpdateHookReturnType = void;
+export type SliceAssetUpdateHookBase = SliceMachineHook<
+	SliceAssetUpdateHookData,
+	SliceAssetUpdateHookReturnType
+>;
+export type SliceAssetUpdateHook<
+	TPluginOptions extends PluginOptions = PluginOptions,
+> = ExtendSliceMachineHook<SliceAssetUpdateHookBase, TPluginOptions>;
+
+// ============================================================================
+// ## slice:asset:delete
+// ============================================================================
+
+export type SliceAssetDeleteHookData = {
+	libraryID: string;
+	sliceID: string;
+	assetID: string;
+};
+export type SliceAssetDeleteHookReturnType = void;
+export type SliceAssetDeleteHookBase = SliceMachineHook<
+	SliceAssetDeleteHookData,
+	SliceAssetDeleteHookReturnType
+>;
+export type SliceAssetDeleteHook<
+	TPluginOptions extends PluginOptions = PluginOptions,
+> = ExtendSliceMachineHook<SliceAssetDeleteHookBase, TPluginOptions>;
+
+// ============================================================================
+// ## slice:asset:read
+// ============================================================================
+
+export type SliceAssetReadHookData = {
+	libraryID: string;
+	sliceID: string;
+	assetID: string;
+};
+export type SliceAssetReadHookReturnType = {
+	data: Buffer;
+};
+export type SliceAssetReadHookBase = SliceMachineHook<
+	SliceAssetReadHookData,
+	SliceAssetReadHookReturnType
+>;
+export type SliceAssetReadHook<
+	TPluginOptions extends PluginOptions = PluginOptions,
+> = ExtendSliceMachineHook<SliceAssetReadHookBase, TPluginOptions>;
 
 // ============================================================================
 // ## slice-library:read
@@ -198,9 +284,10 @@ export type SliceLibraryReadHook<
 export type CustomTypeCreateHookData = {
 	model: prismicT.CustomTypeModel;
 };
+export type CustomTypeCreateHookReturnType = void;
 export type CustomTypeCreateHookBase = SliceMachineHook<
 	CustomTypeCreateHookData,
-	void
+	CustomTypeCreateHookReturnType
 >;
 export type CustomTypeCreateHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
@@ -213,9 +300,10 @@ export type CustomTypeCreateHook<
 export type CustomTypeUpdateHookData = {
 	model: prismicT.CustomTypeModel;
 };
+export type CustomTypeUpdateHookReturnType = void;
 export type CustomTypeUpdateHookBase = SliceMachineHook<
 	CustomTypeUpdateHookData,
-	void
+	CustomTypeUpdateHookReturnType
 >;
 export type CustomTypeUpdateHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
@@ -228,9 +316,10 @@ export type CustomTypeUpdateHook<
 export type CustomTypeDeleteHookData = {
 	model: prismicT.CustomTypeModel;
 };
+export type CustomTypeDeleteHookReturnType = void;
 export type CustomTypeDeleteHookBase = SliceMachineHook<
 	CustomTypeDeleteHookData,
-	void
+	CustomTypeDeleteHookReturnType
 >;
 export type CustomTypeDeleteHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
@@ -251,6 +340,62 @@ export type CustomTypeReadHookBase = SliceMachineHook<
 export type CustomTypeReadHook<
 	TPluginOptions extends PluginOptions = PluginOptions,
 > = ExtendSliceMachineHook<CustomTypeReadHookBase, TPluginOptions>;
+
+// ============================================================================
+// ## slice:asset:update
+// ============================================================================
+
+export type CustomTypeAssetUpdateHookData = {
+	customTypeID: string;
+	asset: {
+		id: string;
+		data: Buffer;
+	};
+};
+export type CustomTypeAssetUpdateHookReturnType = void;
+export type CustomTypeAssetUpdateHookBase = SliceMachineHook<
+	CustomTypeAssetUpdateHookData,
+	CustomTypeAssetUpdateHookReturnType
+>;
+export type CustomTypeAssetUpdateHook<
+	TPluginOptions extends PluginOptions = PluginOptions,
+> = ExtendSliceMachineHook<CustomTypeAssetUpdateHookBase, TPluginOptions>;
+
+// ============================================================================
+// ## slice:asset:delete
+// ============================================================================
+
+export type CustomTypeAssetDeleteHookData = {
+	customTypeID: string;
+	assetID: string;
+};
+export type CustomTypeAssetDeleteHookReturnType = void;
+export type CustomTypeAssetDeleteHookBase = SliceMachineHook<
+	CustomTypeAssetDeleteHookData,
+	CustomTypeAssetDeleteHookReturnType
+>;
+export type CustomTypeAssetDeleteHook<
+	TPluginOptions extends PluginOptions = PluginOptions,
+> = ExtendSliceMachineHook<CustomTypeAssetDeleteHookBase, TPluginOptions>;
+
+// ============================================================================
+// ## slice:asset:read
+// ============================================================================
+
+export type CustomTypeAssetReadHookData = {
+	customTypeID: string;
+	assetID: string;
+};
+export type CustomTypeAssetReadHookReturnType = {
+	data: Buffer;
+};
+export type CustomTypeAssetReadHookBase = SliceMachineHook<
+	CustomTypeAssetReadHookData,
+	CustomTypeAssetReadHookReturnType
+>;
+export type CustomTypeAssetReadHook<
+	TPluginOptions extends PluginOptions = PluginOptions,
+> = ExtendSliceMachineHook<CustomTypeAssetReadHookBase, TPluginOptions>;
 
 // ============================================================================
 // ## custom-type-library:read
