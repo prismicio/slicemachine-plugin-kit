@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.0.2...v0.1.0) (2022-10-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* return model through an object to ease evolutions (#1)
+
+### Features
+
+* add `readAll*` actions to facilitate model reading ([#2](https://github.com/prismicio/slicemachine-plugin-kit/issues/2)) ([ad56e8b](https://github.com/prismicio/slicemachine-plugin-kit/commit/ad56e8b0ac1bdce5b942563c44747c6997bf8a8c))
+
+
+### Refactor
+
+* return model through an object to ease evolutions ([#1](https://github.com/prismicio/slicemachine-plugin-kit/issues/1)) ([bff9a24](https://github.com/prismicio/slicemachine-plugin-kit/commit/bff9a240e4740b8732c5a40848f61c7279918a02))
+
 ### 0.0.2 (2022-07-10)
 
 
