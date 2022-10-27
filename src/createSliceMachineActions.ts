@@ -1,15 +1,16 @@
 import { HookSystem } from "./lib";
+import { SliceMachineHooks, SliceMachineProject } from "./types";
+
+import { CustomTypeLibraryReadHookReturnType } from "./hooks/customTypeLibrary-read";
 import {
-	CustomTypeLibraryReadHookReturnType,
 	CustomTypeReadHookData,
 	CustomTypeReadHookReturnType,
+} from "./hooks/customType-read";
+import {
 	SliceLibraryReadHookData,
 	SliceLibraryReadHookReturnType,
-	SliceMachineHooks,
-	SliceMachineProject,
-	SliceReadHookData,
-	SliceReadHookReturnType,
-} from "./types";
+} from "./hooks/sliceLibrary-read";
+import { SliceReadHookData, SliceReadHookReturnType } from "./hooks/slice-read";
 
 export type ReadAllSliceModelsActionArgs<
 	TWithMetadata extends boolean = false,

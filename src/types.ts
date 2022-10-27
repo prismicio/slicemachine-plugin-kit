@@ -1,15 +1,43 @@
-import * as prismicT from "@prismicio/types";
-
 import { SliceMachineContext } from "./createSliceMachineContext";
 import { SliceMachinePlugin } from "./defineSliceMachinePlugin";
 import { Hook } from "./lib";
 
-type Promisable<T> = T | PromiseLike<T>;
+import { CustomTypeAssetDeleteHookBase } from "./hooks/customType-asset-delete";
+import { CustomTypeAssetReadHookBase } from "./hooks/customType-asset-read";
+import { CustomTypeAssetUpdateHookBase } from "./hooks/customType-asset-update";
+import { CustomTypeCreateHookBase } from "./hooks/customType-create";
+import { CustomTypeDeleteHookBase } from "./hooks/customType-delete";
+import { CustomTypeLibraryReadHookBase } from "./hooks/customTypeLibrary-read";
+import { CustomTypeReadHookBase } from "./hooks/customType-read";
+import { CustomTypeUpdateHookBase } from "./hooks/customType-update";
+import { SliceAssetDeleteHookBase } from "./hooks/slice-asset-delete";
+import { SliceAssetReadHookBase } from "./hooks/slice-asset-read";
+import { SliceAssetUpdateHookBase } from "./hooks/slice-asset-update";
+import { SliceCreateHookBase } from "./hooks/slice-create";
+import { SliceDeleteHookBase } from "./hooks/slice-delete";
+import { SliceLibraryReadHookBase } from "./hooks/sliceLibrary-read";
+import { SliceReadHookBase } from "./hooks/slice-read";
+import { SliceSimulatorSetupReadHookBase } from "./hooks/sliceSimulator-setup-read";
+import { SliceUpdateHookBase } from "./hooks/slice-update";
+import { SnippetReadHookBase } from "./hooks/snippet-read";
 
+/**
+ * A value optionally wrapped in a `PromiseLike`.
+ *
+ * @typeParam T - The value that can optionally be wrapped.
+ */
+export type Promisable<T> = T | PromiseLike<T>;
+
+/**
+ * A generic type for a user-provided plugin options. Prefer using a
+ * plugin-specific type over this type.
+ */
 export type PluginOptions = Record<string, unknown>;
 
 /**
- * How plugins are registered.
+ * A string, object, or instance representing a registered plugin.
+ *
+ * @typeParam TPluginOptions - User-provided options for the plugin.
  */
 export type SliceMachineConfigPluginRegistration<
 	TPluginOptions extends PluginOptions = PluginOptions,
@@ -22,7 +50,7 @@ export type SliceMachineConfigPluginRegistration<
 	  };
 
 /**
- * Slice Machine `sm.json` config.
+ * Slice Machine `sm.json` configuration.
  */
 export type SliceMachineConfig = {
 	_latest: string;
@@ -33,6 +61,9 @@ export type SliceMachineConfig = {
 	plugins?: SliceMachineConfigPluginRegistration[];
 };
 
+/**
+ * Slice Machine project metadata.
+ */
 export type SliceMachineProject = {
 	/**
 	 * An absolute path to project root.
@@ -44,6 +75,9 @@ export type SliceMachineProject = {
 	config: SliceMachineConfig;
 };
 
+/**
+ * A Slice Library's metadata.
+ */
 export type SliceLibrary = {
 	id: string;
 };
@@ -54,14 +88,29 @@ export type SliceLibrary = {
 //
 // ============================================================================
 
+/**
+ * A hook handler.
+ */
 export type SliceMachineHook<TData, TReturn> = (
 	data: TData,
 ) => Promisable<TReturn>;
 
+/**
+ * Extra arguments provided to hooks when called.
+ *
+ * @typeParam TPluginOptions - User-provided options for the hook's plugin.
+ */
 export type SliceMachineHookExtraArgs<
 	TPluginOptions extends PluginOptions = PluginOptions,
 > = [context: SliceMachineContext<TPluginOptions>];
 
+/**
+ * Utility type to extend a hook handler's type with Slice Machine-specific
+ * extra arguments.
+ *
+ * @typeParam THook - Hook handler to extend.
+ * @typeParam TPluginOptions - User-provided options for the hook's plugin.
+ */
 export type ExtendSliceMachineHook<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	THook extends SliceMachineHook<any, any>,
@@ -73,30 +122,51 @@ export type ExtendSliceMachineHook<
 	]
 ) => ReturnType<THook>;
 
+/**
+ * Hook types.
+ */
 export const SliceMachineHookType = {
 	slice_create: "slice:create",
 	slice_update: "slice:update",
 	slice_delete: "slice:delete",
 	slice_read: "slice:read",
+	slice_asset_update: "slice:asset:update",
+	slice_asset_delete: "slice:asset:delete",
+	slice_asset_read: "slice:asset:read",
 	sliceLibrary_read: "slice-library:read",
+
 	customType_create: "custom-type:create",
 	customType_update: "custom-type:update",
 	customType_delete: "custom-type:delete",
 	customType_read: "custom-type:read",
+	customType_asset_update: "custom-type:asset:update",
+	customType_asset_delete: "custom-type:asset:delete",
+	customType_asset_read: "custom-type:asset:read",
 	customTypeLibrary_read: "custom-type-library:read",
+
 	snippet_read: "snippet:read",
+
 	sliceSimulator_setup_read: "slice-simulator:setup:read",
 } as const;
 
+/**
+ * Hook types.
+ */
 export type SliceMachineHookTypes =
 	typeof SliceMachineHookType[keyof typeof SliceMachineHookType];
 
+/**
+ * Slice Machine-specific hook handlers.
+ */
 export type SliceMachineHooks = {
 	// Slices
 	[SliceMachineHookType.slice_create]: Hook<SliceCreateHookBase>;
 	[SliceMachineHookType.slice_update]: Hook<SliceUpdateHookBase>;
 	[SliceMachineHookType.slice_delete]: Hook<SliceDeleteHookBase>;
 	[SliceMachineHookType.slice_read]: Hook<SliceReadHookBase>;
+	[SliceMachineHookType.slice_asset_update]: Hook<SliceAssetUpdateHookBase>;
+	[SliceMachineHookType.slice_asset_delete]: Hook<SliceAssetDeleteHookBase>;
+	[SliceMachineHookType.slice_asset_read]: Hook<SliceAssetReadHookBase>;
 
 	// Slice Libraries
 	[SliceMachineHookType.sliceLibrary_read]: Hook<SliceLibraryReadHookBase>;
@@ -106,6 +176,9 @@ export type SliceMachineHooks = {
 	[SliceMachineHookType.customType_update]: Hook<CustomTypeUpdateHookBase>;
 	[SliceMachineHookType.customType_delete]: Hook<CustomTypeDeleteHookBase>;
 	[SliceMachineHookType.customType_read]: Hook<CustomTypeReadHookBase>;
+	[SliceMachineHookType.customType_asset_update]: Hook<CustomTypeAssetUpdateHookBase>;
+	[SliceMachineHookType.customType_asset_delete]: Hook<CustomTypeAssetDeleteHookBase>;
+	[SliceMachineHookType.customType_asset_read]: Hook<CustomTypeAssetReadHookBase>;
 
 	// Custom Type Libraries
 	[SliceMachineHookType.customTypeLibrary_read]: Hook<CustomTypeLibraryReadHookBase>;
@@ -116,223 +189,3 @@ export type SliceMachineHooks = {
 	// Slice Simulator
 	[SliceMachineHookType.sliceSimulator_setup_read]: Hook<SliceSimulatorSetupReadHookBase>;
 };
-
-// ============================================================================
-// ## slice:create
-// ============================================================================
-
-export type SliceCreateHookData = {
-	libraryID: string;
-	model: prismicT.SharedSliceModel;
-};
-export type SliceCreateHookBase = SliceMachineHook<SliceCreateHookData, void>;
-export type SliceCreateHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SliceCreateHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## slice:update
-// ============================================================================
-
-export type SliceUpdateHookData = {
-	libraryID: string;
-	model: prismicT.SharedSliceModel;
-};
-export type SliceUpdateHookBase = SliceMachineHook<SliceUpdateHookData, void>;
-export type SliceUpdateHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SliceUpdateHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## slice:delete
-// ============================================================================
-
-export type SliceDeleteHookData = {
-	libraryID: string;
-	model: prismicT.SharedSliceModel;
-};
-export type SliceDeleteHookBase = SliceMachineHook<SliceDeleteHookData, void>;
-export type SliceDeleteHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SliceDeleteHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## slice:read
-// ============================================================================
-
-export type SliceReadHookData = {
-	libraryID: string;
-	sliceID: string;
-};
-export type SliceReadHookReturnType = { model: prismicT.SharedSliceModel };
-export type SliceReadHookBase = SliceMachineHook<
-	SliceReadHookData,
-	SliceReadHookReturnType
->;
-export type SliceReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SliceReadHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## slice-library:read
-// ============================================================================
-
-export type SliceLibraryReadHookData = {
-	libraryID: string;
-};
-export type SliceLibraryReadHookReturnType = SliceLibrary & {
-	sliceIDs: string[];
-};
-export type SliceLibraryReadHookBase = SliceMachineHook<
-	SliceLibraryReadHookData,
-	SliceLibraryReadHookReturnType
->;
-export type SliceLibraryReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SliceLibraryReadHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## custom-type:create
-// ============================================================================
-
-export type CustomTypeCreateHookData = {
-	model: prismicT.CustomTypeModel;
-};
-export type CustomTypeCreateHookBase = SliceMachineHook<
-	CustomTypeCreateHookData,
-	void
->;
-export type CustomTypeCreateHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<CustomTypeCreateHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## custom-type:update
-// ============================================================================
-
-export type CustomTypeUpdateHookData = {
-	model: prismicT.CustomTypeModel;
-};
-export type CustomTypeUpdateHookBase = SliceMachineHook<
-	CustomTypeUpdateHookData,
-	void
->;
-export type CustomTypeUpdateHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<CustomTypeUpdateHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## custom-type:delete
-// ============================================================================
-
-export type CustomTypeDeleteHookData = {
-	model: prismicT.CustomTypeModel;
-};
-export type CustomTypeDeleteHookBase = SliceMachineHook<
-	CustomTypeDeleteHookData,
-	void
->;
-export type CustomTypeDeleteHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<CustomTypeDeleteHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## custom-type:read
-// ============================================================================
-
-export type CustomTypeReadHookData = {
-	id: string;
-};
-export type CustomTypeReadHookReturnType = { model: prismicT.CustomTypeModel };
-export type CustomTypeReadHookBase = SliceMachineHook<
-	CustomTypeReadHookData,
-	CustomTypeReadHookReturnType
->;
-export type CustomTypeReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<CustomTypeReadHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## custom-type-library:read
-// ============================================================================
-
-export type CustomTypeLibraryReadHookReturnType = {
-	ids: string[];
-};
-export type CustomTypeLibraryReadHookBase = SliceMachineHook<
-	undefined,
-	CustomTypeLibraryReadHookReturnType
->;
-export type CustomTypeLibraryReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<CustomTypeLibraryReadHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## snippet:read
-// ============================================================================
-
-export const SnippetReadHookDataRootModelType = {
-	Slice: "Slice",
-	CustomType: "CustomType",
-} as const;
-export type SnippetReadHookData = {
-	fieldPath: string[];
-} & (
-	| {
-			rootModelType: typeof SnippetReadHookDataRootModelType.Slice;
-			rootModel: prismicT.SharedSliceModel;
-			model: prismicT.CustomTypeModelFieldForGroup;
-	  }
-	| {
-			rootModelType: typeof SnippetReadHookDataRootModelType.CustomType;
-			rootModel: prismicT.CustomTypeModel;
-			model: prismicT.CustomTypeModelField;
-	  }
-);
-export type SnippetDescriptor = {
-	label: string;
-	language: string;
-	code: string;
-};
-export type SnippetReadHookReturnType =
-	| SnippetDescriptor
-	| SnippetDescriptor[]
-	| undefined;
-export type SnippetReadHookBase = SliceMachineHook<
-	SnippetReadHookData,
-	SnippetReadHookReturnType
->;
-export type SnippetReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SnippetReadHookBase, TPluginOptions>;
-
-// ============================================================================
-// ## slice-simulator:setup:read
-// ============================================================================
-
-export const SliceSimulatorSetupStepValidationMessageType = {
-	Error: "Error",
-	Warning: "Warning",
-} as const;
-export type SliceSimulatorSetupStepValidationMessage = {
-	type: typeof SliceSimulatorSetupStepValidationMessageType[keyof typeof SliceSimulatorSetupStepValidationMessageType];
-	title: string;
-	message: string;
-};
-export type SliceSimulatorSetupStep = {
-	title: string;
-	body: string;
-	validate?: () => Promisable<
-		| SliceSimulatorSetupStepValidationMessage
-		| SliceSimulatorSetupStepValidationMessage[]
-		| void
-	>;
-};
-export type SliceSimulatorSetupReadHookReturnType = SliceSimulatorSetupStep[];
-export type SliceSimulatorSetupReadHookBase = SliceMachineHook<
-	undefined,
-	SliceSimulatorSetupReadHookReturnType
->;
-export type SliceSimulatorSetupReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
-> = ExtendSliceMachineHook<SliceSimulatorSetupReadHookBase, TPluginOptions>;
