@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.0...v0.1.1) (2022-10-27)
+
+
+### Features
+
+* add Slice and Custom Type asset management hooks ([#3](https://github.com/prismicio/slicemachine-plugin-kit/issues/3)) ([26a1e6d](https://github.com/prismicio/slicemachine-plugin-kit/commit/26a1e6dac84ae24bf52b79ead66d7bdca2752f80))
+
 ## [0.1.0](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.0.2...v0.1.0) (2022-10-22)
 
 
