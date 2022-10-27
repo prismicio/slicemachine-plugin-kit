@@ -5,7 +5,10 @@ import * as plugin from "./__fixtures__/plugin";
 import { createSliceMachineProject } from "./__testutils__/createSliceMachineProject";
 
 import { createSliceMachinePluginRunner } from "../src";
-import { REQUIRED_ADAPTER_HOOKS } from "../src/createSliceMachinePluginRunner";
+import {
+	REQUIRED_ADAPTER_HOOKS,
+	ADAPTER_ONLY_HOOKS,
+} from "../src/createSliceMachinePluginRunner";
 
 const project = createSliceMachineProject(adapter.valid);
 const pluginRunner = createSliceMachinePluginRunner({ project });
@@ -77,5 +80,7 @@ it("prevents plugin setup as plugin to hook to adapter only hooks", async () => 
 		pluginRunner
 			.hooksForOwner(adapter.valid.meta.name)
 			.map((hook) => hook.meta.type),
-	).toStrictEqual([]);
+	).toStrictEqual(
+		REQUIRED_ADAPTER_HOOKS.filter((type) => !ADAPTER_ONLY_HOOKS.includes(type)),
+	);
 });
