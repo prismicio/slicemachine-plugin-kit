@@ -28,10 +28,14 @@ import {
  */
 export const REQUIRED_ADAPTER_HOOKS: SliceMachineHookTypes[] = [
 	"slice:read",
+	"slice:asset:update",
 	"slice:asset:read",
+	"slice:asset:delete",
 	"slice-library:read",
 	"custom-type:read",
+	"custom-type:asset:update",
 	"custom-type:asset:read",
+	"custom-type:asset:delete",
 	"custom-type-library:read",
 	"slice-simulator:setup:read",
 ];
