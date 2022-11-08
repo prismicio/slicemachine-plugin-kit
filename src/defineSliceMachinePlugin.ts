@@ -1,7 +1,7 @@
 import { CreateScopeReturnType } from "./lib";
 import { SliceMachineContext } from "./createSliceMachineContext";
 import {
-	PluginOptions,
+	SliceMachinePluginOptions,
 	SliceMachineHookExtraArgs,
 	SliceMachineHooks,
 } from "./types";
@@ -43,14 +43,14 @@ export type SliceMachinePlugin<
  * @internal
  */
 export type LoadedSliceMachinePlugin<
-	TPluginOptions extends PluginOptions = PluginOptions,
+	TPluginOptions extends SliceMachinePluginOptions = SliceMachinePluginOptions,
 > = SliceMachinePlugin<TPluginOptions> & {
 	resolve: string | SliceMachinePlugin;
 	options: TPluginOptions;
 };
 
 export const defineSliceMachinePlugin = <
-	TPluginOptions extends PluginOptions = PluginOptions,
+	TPluginOptions extends SliceMachinePluginOptions = SliceMachinePluginOptions,
 >(
 	plugin: SliceMachinePlugin<TPluginOptions>,
 ): SliceMachinePlugin<TPluginOptions> => plugin;

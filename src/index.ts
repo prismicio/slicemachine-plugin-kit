@@ -18,7 +18,7 @@ export type { SliceMachineContext } from "./createSliceMachineContext";
 
 export { SliceMachineHookType } from "./types";
 export type {
-	PluginOptions,
+	SliceMachinePluginOptions,
 	SliceMachineProject,
 	SliceMachineConfig,
 	SliceLibrary,

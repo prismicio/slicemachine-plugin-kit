@@ -1,6 +1,6 @@
 import type {
 	ExtendSliceMachineHook,
-	PluginOptions,
+	SliceMachinePluginOptions,
 	Promisable,
 	SliceMachineHook,
 } from "../types";
@@ -67,5 +67,5 @@ export type SliceSimulatorSetupReadHookBase = SliceMachineHook<
  * @typeParam TPluginOptions - User-provided options for the hook's plugin.
  */
 export type SliceSimulatorSetupReadHook<
-	TPluginOptions extends PluginOptions = PluginOptions,
+	TPluginOptions extends SliceMachinePluginOptions = SliceMachinePluginOptions,
 > = ExtendSliceMachineHook<SliceSimulatorSetupReadHookBase, TPluginOptions>;

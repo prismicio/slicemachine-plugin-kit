@@ -32,7 +32,7 @@ export type Promisable<T> = T | PromiseLike<T>;
  * A generic type for a user-provided plugin options. Prefer using a
  * plugin-specific type over this type.
  */
-export type PluginOptions = Record<string, unknown>;
+export type SliceMachinePluginOptions = Record<string, unknown>;
 
 /**
  * A string, object, or instance representing a registered plugin.
@@ -40,7 +40,7 @@ export type PluginOptions = Record<string, unknown>;
  * @typeParam TPluginOptions - User-provided options for the plugin.
  */
 export type SliceMachineConfigPluginRegistration<
-	TPluginOptions extends PluginOptions = PluginOptions,
+	TPluginOptions extends SliceMachinePluginOptions = SliceMachinePluginOptions,
 > =
 	| string
 	| SliceMachinePlugin
@@ -50,11 +50,15 @@ export type SliceMachineConfigPluginRegistration<
 	  };
 
 /**
- * Slice Machine `sm.json` configuration.
+ * Slice Machine configuration from `slicemachine.config.js`.
  */
 export type SliceMachineConfig = {
+	// TODO: Is `_latest` necessary? Can we deprecate it?
 	_latest: string;
-	apiEndpoint: string;
+	// TODO: Can we make `apiEndpoint` optional?
+	apiEndpoint?: string;
+	// NOTE: This is a new property.
+	repositoryName: string;
 	localSliceSimulatorURL?: string;
 	libraries?: string[];
 	adapter: SliceMachineConfigPluginRegistration;
@@ -101,7 +105,7 @@ export type SliceMachineHook<TData, TReturn> = (
  * @typeParam TPluginOptions - User-provided options for the hook's plugin.
  */
 export type SliceMachineHookExtraArgs<
-	TPluginOptions extends PluginOptions = PluginOptions,
+	TPluginOptions extends SliceMachinePluginOptions = SliceMachinePluginOptions,
 > = [context: SliceMachineContext<TPluginOptions>];
 
 /**
@@ -114,7 +118,7 @@ export type SliceMachineHookExtraArgs<
 export type ExtendSliceMachineHook<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	THook extends SliceMachineHook<any, any>,
-	TPluginOptions extends PluginOptions = PluginOptions,
+	TPluginOptions extends SliceMachinePluginOptions = SliceMachinePluginOptions,
 > = (
 	...args: [
 		...args: Parameters<THook>,
