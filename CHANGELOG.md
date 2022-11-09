@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.3...v0.1.4) (2022-11-09)
+
+
+### Bug Fixes
+
+* treat `strip-indent` as an internal dependency ([54484de](https://github.com/prismicio/slicemachine-plugin-kit/commit/54484de2af6f9a309eadc5b74626dd12e2ac1999))
+
 ### [0.1.3](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.2...v0.1.3) (2022-11-09)
 
 
