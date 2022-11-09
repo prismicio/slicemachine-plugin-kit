@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.2...v0.1.3) (2022-11-09)
+
+
+### Bug Fixes
+
+* rename PluginOptions to SliceMachinePluginOptions ([a2e1331](https://github.com/prismicio/slicemachine-plugin-kit/commit/a2e13314ab521f9046ff0ee91cf6b9d02243837f))
+
 ### [0.1.2](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.1...v0.1.2) (2022-10-27)
 
 
