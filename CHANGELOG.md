@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.4...v0.1.5) (2022-11-09)
+
+
+### Chore
+
+* replace `strip-indent` with `common-tags` ([5fc28ab](https://github.com/prismicio/slicemachine-plugin-kit/commit/5fc28abb36627cf0707224e297d5c251fee2eba5))
+
 ### [0.1.4](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.3...v0.1.4) (2022-11-09)
 
 
