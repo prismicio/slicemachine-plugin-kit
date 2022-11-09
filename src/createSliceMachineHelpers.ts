@@ -2,7 +2,7 @@ import * as path from "node:path";
 import * as fs from "node:fs/promises";
 
 import prettier from "prettier";
-import stripIndent from "strip-indent";
+import { stripIndent } from "common-tags";
 
 import { SliceMachineProject } from "./types";
 
