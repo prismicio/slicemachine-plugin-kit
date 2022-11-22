@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.6...v0.1.7) (2022-11-22)
+
+
+### Bug Fixes
+
+* use correct `slice:rename` and `custom-type:rename` data ([2abb83a](https://github.com/prismicio/slicemachine-plugin-kit/commit/2abb83ab2d8c583b7417119e884319b7827b7869))
+
 ### [0.1.6](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.5...v0.1.6) (2022-11-22)
 
 
