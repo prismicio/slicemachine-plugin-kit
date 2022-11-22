@@ -1,3 +1,5 @@
+import { CustomTypeModel } from "@prismicio/types";
+
 import type {
 	ExtendSliceMachineHook,
 	SliceMachinePluginOptions,
@@ -8,8 +10,7 @@ import type {
  * Data provided to `custom-type:rename` hook handlers.
  */
 export type CustomTypeRenameHookData = {
-	oldID: string;
-	newID: string;
+	model: CustomTypeModel;
 };
 
 /**
