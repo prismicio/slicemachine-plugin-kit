@@ -69,6 +69,13 @@ export type {
 	SliceUpdateHookReturnType,
 } from "./hooks/slice-update";
 
+// slice:rename
+export type {
+	SliceRenameHook,
+	SliceRenameHookData,
+	SliceRenameHookReturnType,
+} from "./hooks/slice-rename";
+
 // slice:delete
 export type {
 	SliceDeleteHook,
@@ -124,6 +131,13 @@ export type {
 	CustomTypeUpdateHookData,
 	CustomTypeUpdateHookReturnType,
 } from "./hooks/customType-update";
+
+// custom-type:rename
+export type {
+	CustomTypeRenameHook,
+	CustomTypeRenameHookData,
+	CustomTypeRenameHookReturnType,
+} from "./hooks/customType-rename";
 
 // custom-type:delete
 export type {

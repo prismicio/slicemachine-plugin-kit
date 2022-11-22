@@ -10,6 +10,7 @@ import { CustomTypeDeleteHookBase } from "./hooks/customType-delete";
 import { CustomTypeLibraryReadHookBase } from "./hooks/customTypeLibrary-read";
 import { CustomTypeReadHookBase } from "./hooks/customType-read";
 import { CustomTypeUpdateHookBase } from "./hooks/customType-update";
+import { CustomTypeRenameHookBase } from "./hooks/customType-rename";
 import { SliceAssetDeleteHookBase } from "./hooks/slice-asset-delete";
 import { SliceAssetReadHookBase } from "./hooks/slice-asset-read";
 import { SliceAssetUpdateHookBase } from "./hooks/slice-asset-update";
@@ -19,6 +20,7 @@ import { SliceLibraryReadHookBase } from "./hooks/sliceLibrary-read";
 import { SliceReadHookBase } from "./hooks/slice-read";
 import { SliceSimulatorSetupReadHookBase } from "./hooks/sliceSimulator-setup-read";
 import { SliceUpdateHookBase } from "./hooks/slice-update";
+import { SliceRenameHookBase } from "./hooks/slice-rename";
 import { SnippetReadHookBase } from "./hooks/snippet-read";
 
 /**
@@ -132,6 +134,7 @@ export type ExtendSliceMachineHook<
 export const SliceMachineHookType = {
 	slice_create: "slice:create",
 	slice_update: "slice:update",
+	slice_rename: "slice:rename",
 	slice_delete: "slice:delete",
 	slice_read: "slice:read",
 	slice_asset_update: "slice:asset:update",
@@ -141,6 +144,7 @@ export const SliceMachineHookType = {
 
 	customType_create: "custom-type:create",
 	customType_update: "custom-type:update",
+	customType_rename: "custom-type:rename",
 	customType_delete: "custom-type:delete",
 	customType_read: "custom-type:read",
 	customType_asset_update: "custom-type:asset:update",
@@ -166,6 +170,7 @@ export type SliceMachineHooks = {
 	// Slices
 	[SliceMachineHookType.slice_create]: Hook<SliceCreateHookBase>;
 	[SliceMachineHookType.slice_update]: Hook<SliceUpdateHookBase>;
+	[SliceMachineHookType.slice_rename]: Hook<SliceRenameHookBase>;
 	[SliceMachineHookType.slice_delete]: Hook<SliceDeleteHookBase>;
 	[SliceMachineHookType.slice_read]: Hook<SliceReadHookBase>;
 	[SliceMachineHookType.slice_asset_update]: Hook<SliceAssetUpdateHookBase>;
@@ -178,6 +183,7 @@ export type SliceMachineHooks = {
 	// Custom Types
 	[SliceMachineHookType.customType_create]: Hook<CustomTypeCreateHookBase>;
 	[SliceMachineHookType.customType_update]: Hook<CustomTypeUpdateHookBase>;
+	[SliceMachineHookType.customType_rename]: Hook<CustomTypeRenameHookBase>;
 	[SliceMachineHookType.customType_delete]: Hook<CustomTypeDeleteHookBase>;
 	[SliceMachineHookType.customType_read]: Hook<CustomTypeReadHookBase>;
 	[SliceMachineHookType.customType_asset_update]: Hook<CustomTypeAssetUpdateHookBase>;
