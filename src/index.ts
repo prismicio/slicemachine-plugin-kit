@@ -161,7 +161,6 @@ export type {
 } from "./hooks/customTypeLibrary-read";
 
 // snippet:read
-export { SnippetReadHookDataRootModelType } from "./hooks/snippet-read";
 export type {
 	SnippetReadHook,
 	SnippetReadHookData,
@@ -170,7 +169,6 @@ export type {
 } from "./hooks/snippet-read";
 
 // slice-simulator-setup:read
-export { SliceSimulatorSetupStepValidationMessageType } from "./hooks/sliceSimulator-setup-read";
 export type {
 	SliceSimulatorSetupReadHook,
 	SliceSimulatorSetupReadHookData,
@@ -179,13 +177,22 @@ export type {
 	SliceSimulatorSetupStepValidationMessage,
 } from "./hooks/sliceSimulator-setup-read";
 
+// command:init
+export type {
+	CommandInitHook,
+	CommandInitHookData,
+	CommandInitHookReturnType,
+} from "./hooks/command-init";
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Internal (for Slice Machine)
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-export { createSliceMachinePluginRunner } from "./createSliceMachinePluginRunner";
-export type { SliceMachinePluginRunner } from "./createSliceMachinePluginRunner";
+export {
+	createSliceMachinePluginRunner,
+	SliceMachinePluginRunner,
+} from "./createSliceMachinePluginRunner";
 
 export type { CallHookReturnType } from "./lib";

@@ -1,4 +1,7 @@
-import defu from "defu";
+import * as path from "node:path";
+import { createRequire } from "node:module";
+
+import { defu } from "defu";
 
 import { HookSystem } from "./lib";
 import { createSliceMachineContext } from "./createSliceMachineContext";
@@ -61,6 +64,7 @@ export const ADAPTER_ONLY_HOOKS: SliceMachineHookTypes[] = [
 type SliceMachinePluginRunnerConstructorArgs = {
 	project: SliceMachineProject;
 	hookSystem: HookSystem<SliceMachineHooks>;
+	nativePlugins?: Record<string, SliceMachinePlugin>;
 };
 
 /**
@@ -69,6 +73,7 @@ type SliceMachinePluginRunnerConstructorArgs = {
 export class SliceMachinePluginRunner {
 	private _project: SliceMachineProject;
 	private _hookSystem: HookSystem<SliceMachineHooks>;
+	private _nativePlugins: Record<string, SliceMachinePlugin>;
 
 	/**
 	 * Slice Machine actions provided to hooks.
@@ -99,9 +104,11 @@ export class SliceMachinePluginRunner {
 	constructor({
 		project,
 		hookSystem,
+		nativePlugins = {},
 	}: SliceMachinePluginRunnerConstructorArgs) {
 		this._project = project;
 		this._hookSystem = hookSystem;
+		this._nativePlugins = nativePlugins;
 
 		this.rawActions = createSliceMachineActions(
 			this._project,
@@ -127,13 +134,25 @@ export class SliceMachinePluginRunner {
 		let plugin: SliceMachinePlugin | undefined = undefined;
 
 		if (typeof resolve === "string") {
-			// Import plugin
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			try {
-				const raw = await import(resolve);
+				const raw = await createRequire(
+					path.resolve(this._project.root, "noop.js"),
+				)(resolve);
 				plugin = raw.default || raw;
 			} catch {
-				// If the plugin could not be imported, we will
-				// throw a custom error later.
+				// noop
+			}
+
+			if (!plugin) {
+				// If an installed plugin cannot be resolved, try loading a native plugin.
+				plugin = this._nativePlugins[resolve];
+			}
+
+			if (!plugin) {
+				throw new Error(
+					`Could not resolve plugin \`${resolve}\`. Check that it has been installed.`,
+				);
 			}
 		} else {
 			plugin = resolve;
@@ -237,6 +256,7 @@ export class SliceMachinePluginRunner {
 
 type CreateSliceMachinePluginRunnerArgs = {
 	project: SliceMachineProject;
+	nativePlugins?: Record<string, SliceMachinePlugin>;
 };
 
 /**
@@ -244,8 +264,13 @@ type CreateSliceMachinePluginRunnerArgs = {
  */
 export const createSliceMachinePluginRunner = ({
 	project,
+	nativePlugins,
 }: CreateSliceMachinePluginRunnerArgs): SliceMachinePluginRunner => {
 	const hookSystem = createSliceMachineHookSystem();
 
-	return new SliceMachinePluginRunner({ project, hookSystem });
+	return new SliceMachinePluginRunner({
+		project,
+		hookSystem,
+		nativePlugins,
+	});
 };
