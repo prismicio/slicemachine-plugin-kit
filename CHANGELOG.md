@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.7...v0.1.8) (2023-01-07)
+
+
+### Features
+
+* add `includeNewlineAtEnd` option to `format` helper ([#5](https://github.com/prismicio/slicemachine-plugin-kit/issues/5)) ([cc3e96a](https://github.com/prismicio/slicemachine-plugin-kit/commit/cc3e96a0071b7133d88ac0505fbfd80bead26654))
+
+
+### Chore
+
+* merge changes from `slice-machine` monorepo ([9a4e411](https://github.com/prismicio/slicemachine-plugin-kit/commit/9a4e411aacd6069e60658838f84a27c95fc1ede7))
+
 ### [0.1.7](https://github.com/prismicio/slicemachine-plugin-kit/compare/v0.1.6...v0.1.7) (2022-11-22)
 
 
